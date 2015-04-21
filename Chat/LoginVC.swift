@@ -45,8 +45,6 @@ class LoginVC: UIViewController,UITextFieldDelegate {
     @IBAction func signinTapped(sender : UIButton) {
         var email:NSString = txtEmail.text
         var password:NSString = txtPwd.text
-
-        let globalVariables = GlobalVariables()
         
         
         if ( email.isEqualToString("") || password.isEqualToString("") ) {
@@ -58,6 +56,7 @@ class LoginVC: UIViewController,UITextFieldDelegate {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
+            let globalVariables = GlobalVariables()
             
             var post:NSString = "e=\(email)&pa=\(password)"
             
