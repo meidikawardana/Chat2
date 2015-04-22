@@ -101,84 +101,6 @@ class HomeVC: UIViewController {
                     
                     println("2......#\(responseStat as String)#")
                         if(responseStat.isEqualToString("1")){
-//                            let msg = "{\"content\":\(responseMsg)}"
-//                            println(msg)
-                            
-//                            let replier = NSNull()
-//                            let poster  = "meidika"
-//                            
-//                            self.socket.emit("message post",[ "content": [
-//                                    [
-//                                        replier,
-//                                        poster,
-//                                        "test7",
-//                                        NSNull(),
-//                                        3,
-//                                        1429631885,
-//                                        10776,
-//                                        0,
-//                                        "0161809001429095521_meidika_cropped.png",
-//                                        0,
-//                                        [
-//                                            
-//                                        ],
-//                                        0,
-//                                        0,
-//                                        "",
-//                                        0,
-//                                        3,
-//                                        1429631640,
-//                                        [
-//                                            
-//                                        ],
-//                                        [
-//                                            
-//                                        ],
-//                                        0,
-//                                        0,
-//                                        1429631885,
-//                                        1
-//                                    ]
-//                                ]
-//                            ])
-//                            sendTextview.text = "";
-//                            sendTextview.resignFirstResponder()
-                            
-
-//                            let post : NSString? = jsonContent[0][2].string
-//                            let reply : NSString? = jsonContent[0][3].string
-//                            let cat_id : NSInteger? = jsonContent[0][4].int
-//                            let act_date : NSInteger? = jsonContent[0][5].int
-//                            let post_id : NSInteger? = jsonContent[0][6].int
-//                            let cd : NSInteger = 0
-//                            let pp : NSString? = jsonContent[0][8].string
-//                            let rep_id : NSInteger? = jsonContent[0][9].int
-//                            
-//                            var images_str : NSString = ""
-//                            
-//                            if jsonContent[0][10].count > 0 {
-//                                images_str = jsonContent[0][10][0].string!
-//                            }
-//                            
-//                            var images_arr = []
-//                            
-//                            if(!images_str.isEqualToString("")){
-//                                images_arr = [images_str]
-//                            }
-//                            
-//                            let creply : NSInteger = 0
-//                            let hot_threaded : NSInteger = 0
-//                            let shortlink : NSString = ""
-//                            let pinned : NSInteger = 0
-//                            let sent_from : NSInteger? = jsonContent[0][15].int
-//                            let act_date_before : NSInteger? = jsonContent[0][16].int //element index #16
-//                            let mention_arr = []
-//                            let mention_arr_reply = []
-//                            let collection_count : NSInteger = 0
-//                            let nbed : NSInteger = 0
-//                            let post_date : NSString? = jsonContent[0][21].string
-//                            let gender : NSInteger? = jsonContent[0][22].int
-                            
                 
                             var error: NSError?
                             
@@ -188,21 +110,129 @@ class HomeVC: UIViewController {
                             
                             println("1------------")
                             println(jsonContent)
-                            //
+                                                        
+                            var replier : NSString = "null"
+                            if let replierTemp : NSString? = jsonContent[0][0].string {
+                                replier = replierTemp!
+                            }
                             
-                            let replier : NSString? = jsonContent[0][0].string
-                            let poster : NSString? = jsonContent[0][1].string
+                            var poster : NSString = "null"
+                            if let posterTemp : NSString? = jsonContent[0][1].string {
+                                poster = posterTemp!
+                            }
+                            
+                            var post : NSString = "null"
+                            if let postTemp : NSString? = jsonContent[0][2].string {
+                                post = postTemp!
+                            }
+                            
+                            var reply : NSString = "null"
+                            if let replyTemp : NSString? = jsonContent[0][3].string {
+                                reply = replyTemp!
+                            }
+                            
+                            var cat_id : NSInteger = 0
+                            if let cat_idTemp : NSInteger? = jsonContent[0][4].int {
+                                cat_id = cat_idTemp!
+                            }
+                            
+                            var act_date : NSInteger = 0
+                            if let act_dateTemp : NSInteger? = jsonContent[0][5].int {
+                                act_date = act_dateTemp!
+                            }
+                            
+                            var post_id : NSInteger = 0
+                            if let post_idTemp : NSInteger? = jsonContent[0][6].int {
+                                post_id = post_idTemp!
+                            }
+                            
+                            let cd : NSInteger = 0
+                            
+                            var pp : NSString = "bullsmile.png"
+                            if let ppTemp : NSString? = jsonContent[0][8].string {
+                                pp = ppTemp!
+                            }
+                            
+                            var rep_id : NSInteger = 0
+                            if let rep_idTemp : NSInteger? = jsonContent[0][9].int {
+                                rep_id = rep_idTemp!
+                            }
+                            
+                            var images_str : NSString = ""
+                            if jsonContent[0][10].count > 0 {
+                                images_str = jsonContent[0][10][0].string!
+                            }
+                            
+                            var images_arr = []
+                            
+                            if(!images_str.isEqualToString("")){
+                                images_arr = [images_str]
+                            }
+                            
+                            let creply : NSInteger = 0
+                            let hot_threaded : NSInteger = 0
+                            let shortlink : NSString = ""
+                            let pinned : NSInteger = 0
+                            
+                            var sent_from : NSInteger = 0
+                            if let sent_fromTemp : NSInteger? = jsonContent[0][15].int {
+                                sent_from = sent_fromTemp!
+                            }
+                            
+                            var act_date_before : NSInteger = 0
+                            if let act_date_beforeTemp : NSInteger? = jsonContent[0][16].int {//element index #16
+                                act_date_before = act_date_beforeTemp!
+                            }
+                            
+                            let mention_arr = []
+                            let mention_arr_reply = []
+                            let collection_count : NSInteger = 0
+                            let nbed : NSInteger = 0
+                            
+                            var post_date : NSString = "0"
+                            if let post_dateTemp : NSString? = jsonContent[0][21].string {
+                                post_date = post_dateTemp!
+                            }
+                            
+                            var gender : NSInteger = 0
+                            if let genderTemp : NSInteger? = jsonContent[0][22].int {
+                                gender = genderTemp!
+                            }
                             
                             let jsonDict = ["content" :
                                 [
                                     [
                                         replier
                                         ,poster
+                                        ,post
+                                        ,reply
+                                        ,cat_id
+                                        ,act_date
+                                        ,post_id
+                                        ,cd
+                                        ,pp
+                                        ,rep_id
+                                        ,images_arr
+                                        ,creply
+                                        ,hot_threaded
+                                        ,shortlink
+                                        ,pinned
+                                        ,sent_from
+                                        ,act_date_before
+                                        ,mention_arr
+                                        ,mention_arr_reply
+                                        ,collection_count
+                                        ,nbed
+                                        ,post_date
+                                        ,gender
                                     ]
                                 ]
                             ]
 
-                                self.socket.emit("message post",jsonDict)
+                            self.socket.emit("message post",jsonDict)
+                            
+                            sendTextview.text = "";
+                            sendTextview.resignFirstResponder()
                         }else{
                             println("failed2")
                         }
@@ -303,7 +333,7 @@ class HomeVC: UIViewController {
         }
         
         var displayMode : Int = 0 //POST_MODE
-        if(!replier.isEqualToString("")){
+        if(!replier.isEqualToString("") && !replier.isEqualToString("null")){
             displayMode = 1 //REPLY_MODE
         }
         
