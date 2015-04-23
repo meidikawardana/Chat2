@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeVC: UIViewController {
+class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
 
     @IBOutlet var usernameLabel : UILabel!
     
@@ -16,8 +16,16 @@ class HomeVC: UIViewController {
     @IBOutlet weak var sendButton: UIButton!
     
     
+    @IBOutlet var tableView: UITableView!
+    
 //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
     let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
+    
+    var threadList : [CTModel] = [
+//        CTModel(titleName:"Barack Obama", categoryName:"today",idImg:"Barack-Obama.jpg"),
+//        CTModel(titleName:"Bill Gates", categoryName:"yesterday",idImg:"bill-gates.jpg"),
+//        CTModel(titleName:"Brad Paisley", categoryName:"12 Oct 15 at 12:01PM",idImg:"Brad-Paisley.jpg"),
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +33,34 @@ class HomeVC: UIViewController {
         // Do any additional setup after loading the view.
         self.addHandlers()
         self.socket.connect()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+    // セクション数
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    // セクションの行数
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return threadList.count
+    }
+    
+    // セクション高さ
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 100
+    }
+    
+    // セル表示
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
+        //cell deque
+        let cell: CTViewCell = self.tableView.dequeueReusableCellWithIdentifier("customCell") as! CTViewCell
+        //cell中身セット（引数　セル、indexPath）
+        cell.configureCell(threadList[indexPath.row] as CTModel, atIndexPath : indexPath)
+        
+        return cell
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -91,15 +127,9 @@ class HomeVC: UIViewController {
                     
                     println(responseStr)
                     
-//                    var responseArr = responseStr.componentsSeparatedByCharactersInSet(separators)
-                    
                     let responseMsg: NSString = responseStr.substringFromIndex(advance(responseStr.startIndex,3))
                     
-                    println("1.....#\(responseMsg as String)#")
-                    
                     let responseStat: NSString = responseStr.substringToIndex(advance(responseStr.startIndex, 1))
-                    
-                    println("2......#\(responseStat as String)#")
                         if(responseStat.isEqualToString("1")){
                 
                             var error: NSError?
@@ -345,7 +375,13 @@ class HomeVC: UIViewController {
             rowText =  "\(replier) replied \(poster) > \" \(reply)\""
         }
         
-        self.appendText(rowText as String)
+//        self.appendText(rowText as String)
+        
+        threadList.append(CTModel(titleName:rowText as String, categoryName:"today",idImg:"Barack-Obama.jpg"))
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
     }
     
     func appendText(chat : String){
