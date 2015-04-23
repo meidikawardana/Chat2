@@ -30,6 +30,10 @@
 		B9ED83851AE09C2500B60227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9ED83841AE09C2500B60227 /* Images.xcassets */; };
 		B9ED83881AE09C2500B60227 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9ED83861AE09C2500B60227 /* LaunchScreen.xib */; };
 		B9ED83941AE09C2500B60227 /* ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED83931AE09C2500B60227 /* ChatTests.swift */; };
+		B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */; };
+		B9FF02951AE8D8CD00C8B471 /* CTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02941AE8D8CD00C8B471 /* CTModel.swift */; };
+		B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */; };
+		B9FF02B21AE8E5C600C8B471 /* bullsmile.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B11AE8E5C600C8B471 /* bullsmile.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +74,10 @@
 		B9ED838D1AE09C2500B60227 /* ChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9ED83921AE09C2500B60227 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B9ED83931AE09C2500B60227 /* ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTests.swift; sourceTree = "<group>"; };
+		B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTViewCell.swift; sourceTree = "<group>"; };
+		B9FF02941AE8D8CD00C8B471 /* CTModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTModel.swift; sourceTree = "<group>"; };
+		B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		B9FF02B11AE8E5C600C8B471 /* bullsmile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bullsmile.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +138,8 @@
 		B9ED837A1AE09C2400B60227 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				B9FF02961AE8DB8500C8B471 /* Images */,
+				B9FF02941AE8D8CD00C8B471 /* CTModel.swift */,
 				B9E30F6A1AE56DF8008FF89D /* LoginVC.swift */,
 				B9E30F6E1AE56F77008FF89D /* Main.storyboard */,
 				B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */,
@@ -142,6 +152,8 @@
 				B9ED837B1AE09C2400B60227 /* Supporting Files */,
 				B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */,
 				B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */,
+				B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */,
+				B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -169,6 +181,14 @@
 				B9ED83921AE09C2500B60227 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B9FF02961AE8DB8500C8B471 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B9FF02B11AE8E5C600C8B471 /* bullsmile.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +273,7 @@
 			files = (
 				B9E30F6F1AE56F77008FF89D /* Main.storyboard in Resources */,
 				B9ED83881AE09C2500B60227 /* LaunchScreen.xib in Resources */,
+				B9FF02B21AE8E5C600C8B471 /* bullsmile.png in Resources */,
 				B9ED83851AE09C2500B60227 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -280,16 +301,19 @@
 				B9ED837E1AE09C2500B60227 /* AppDelegate.swift in Sources */,
 				B9051C851AE6B06C000FF5BE /* SocketTypes.swift in Sources */,
 				B9051C7C1AE6B06C000FF5BE /* SocketAckMap.swift in Sources */,
+				B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */,
 				B9E30F6D1AE56F39008FF89D /* SignupVC.swift in Sources */,
 				B9051C811AE6B06C000FF5BE /* SocketFixUTF8.swift in Sources */,
 				B9051C861AE6B06C000FF5BE /* SwiftRegex.swift in Sources */,
 				B9051C7E1AE6B06C000FF5BE /* SocketEngine.swift in Sources */,
 				B9051C871AE6B06C000FF5BE /* WebSocket.swift in Sources */,
 				B9051C831AE6B06C000FF5BE /* SocketPacket.swift in Sources */,
+				B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */,
 				B9E30F671AE4D57C008FF89D /* HomeCustomSegue.swift in Sources */,
 				B9051C821AE6B06C000FF5BE /* SocketIOClient.swift in Sources */,
 				B9E30F711AE56FCC008FF89D /* HomeVC.swift in Sources */,
 				B94DBD791AE48FBD00527C63 /* GlobalVariables.swift in Sources */,
+				B9FF02951AE8D8CD00C8B471 /* CTModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
