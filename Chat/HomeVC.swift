@@ -6,36 +6,94 @@
 //  Copyright (c) 2014 Dipin Krishna. All rights reserved.
 
 import UIKit
+import Alamofire
 
-class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
-
+class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
+UINavigationControllerDelegate,UIImagePickerControllerDelegate{
+    
     @IBOutlet var usernameLabel : UILabel!
     
-    @IBOutlet weak var chatTextview: UITextView!
     @IBOutlet weak var sendTextview: UITextView!
     @IBOutlet weak var sendButton: UIButton!
     
     
     @IBOutlet var tableView: UITableView!
     
-//    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
+    @IBOutlet var uploadImgView: UIImageView!
+    
+    @IBOutlet var btnUploadImg: UIButton!
+    
+    
+    @IBOutlet var btnRemoveImg: UIButton!
+    
+    
+    var imagePicker = UIImagePickerController()
+    
+    @IBAction func uploadImgTapped(sender: AnyObject) {
+        
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.SavedPhotosAlbum){
+            println("Button capture")
+            
+            imagePicker.delegate = self
+            imagePicker.sourceType = UIImagePickerControllerSourceType.SavedPhotosAlbum;
+            imagePicker.allowsEditing = false
+            
+            self.presentViewController(imagePicker, animated: true, completion: nil)
+        }
+        
+    }
+    
+    @IBAction func btnRemoveImgTapped(sender: AnyObject) {
+        self.clearUploadImg()
+    }
+    
+    
+    func clearUploadImg(){
+        uploadImgView.image = nil
+        btnRemoveImg.hidden = true
+    }
+    
+    //    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: NSDictionary){
+    //        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+    //
+    //        })
+    //
+    //        uploadImgView.image = image
+    //
+    //    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject])
+    {
+        picker .dismissViewControllerAnimated(true, completion: nil)
+        
+        if let imageTemp : UIImage? = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            uploadImgView.image = imageTemp
+            btnRemoveImg.hidden = false
+        }else{
+            btnRemoveImg.hidden = true
+        }
+    }
+    
+    
+    //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
     let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
     
-    var threadList : [CTModel] = [
-//        CTModel(titleName:"Barack Obama", categoryName:"today",idImg:"Barack-Obama.jpg"),
-//        CTModel(titleName:"Bill Gates", categoryName:"yesterday",idImg:"bill-gates.jpg"),
-//        CTModel(titleName:"Brad Paisley", categoryName:"12 Oct 15 at 12:01PM",idImg:"Brad-Paisley.jpg"),
-    ]
+    var threadList : [CTModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        btnRemoveImg.hidden = true
+        
         // Do any additional setup after loading the view.
         self.addHandlers()
         self.socket.connect()
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 200
     }
     
     // セクション数
@@ -49,9 +107,9 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
     }
     
     // セクション高さ
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 100
-    }
+    //    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    //        return 100
+    //    }
     
     // セル表示
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
@@ -78,23 +136,23 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
             self.socket.emit("add user", jsonLogin)
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     /*
     // #pragma mark - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue?, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
     }
     */
-
+    
     @IBAction func logoutTapped(sender : UIButton) {
         
         let appDomain = NSBundle.mainBundle().bundleIdentifier
@@ -109,165 +167,44 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
         if (!self.isLoggedIn()) {
             self.gotoLogin()
         } else {
-            var post:NSString = sendTextview.text
-            if ( post.isEqualToString("")) {                           
-                self.showAlert("Post Failed!", message: "Please write something")
-            } else {
-                let globalVariables = GlobalVariables()
-            
-                let uname:NSString = self.getXN()
-                
-                var postData:NSString = "x=\(uname)&y=3&z=\(post)&i=&u=&im=&s=3"
-                
-                if let responseData:NSData? = askServer("Post", url: globalVariables.serverUrl+"/stock_tab6_post_status.php", postData: postData){
-                    
-                    let responseNSStr:NSString  = NSString(data:responseData!, encoding:NSUTF8StringEncoding)!
-                    
-                    let responseStr :String = responseNSStr as String
-                    
-                    println(responseStr)
-                    
-                    let responseMsg: NSString = responseStr.substringFromIndex(advance(responseStr.startIndex,3))
-                    
-                    let responseStat: NSString = responseStr.substringToIndex(advance(responseStr.startIndex, 1))
-                        if(responseStat.isEqualToString("1")){
-                
-                            var error: NSError?
-                            
-                            var dataFromNetwork:NSData! = responseMsg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-                            
-                            let jsonContent = JSON(data: dataFromNetwork)
-                            
-                            println("1------------")
-                            println(jsonContent)
-                                                        
-                            var replier : NSString = "null"
-                            if let replierTemp : NSString? = jsonContent[0][0].string {
-                                replier = replierTemp!
-                            }
-                            
-                            var poster : NSString = "null"
-                            if let posterTemp : NSString? = jsonContent[0][1].string {
-                                poster = posterTemp!
-                            }
-                            
-                            var post : NSString = "null"
-                            if let postTemp : NSString? = jsonContent[0][2].string {
-                                post = postTemp!
-                            }
-                            
-                            var reply : NSString = "null"
-                            if let replyTemp : NSString? = jsonContent[0][3].string {
-                                reply = replyTemp!
-                            }
-                            
-                            var cat_id : NSInteger = 0
-                            if let cat_idTemp : NSInteger? = jsonContent[0][4].int {
-                                cat_id = cat_idTemp!
-                            }
-                            
-                            var act_date : NSInteger = 0
-                            if let act_dateTemp : NSInteger? = jsonContent[0][5].int {
-                                act_date = act_dateTemp!
-                            }
-                            
-                            var post_id : NSInteger = 0
-                            if let post_idTemp : NSInteger? = jsonContent[0][6].int {
-                                post_id = post_idTemp!
-                            }
-                            
-                            let cd : NSInteger = 0
-                            
-                            var pp : NSString = "bullsmile.png"
-                            if let ppTemp : NSString? = jsonContent[0][8].string {
-                                pp = ppTemp!
-                            }
-                            
-                            var rep_id : NSInteger = 0
-                            if let rep_idTemp : NSInteger? = jsonContent[0][9].int {
-                                rep_id = rep_idTemp!
-                            }
-                            
-                            var images_str : NSString = ""
-                            if jsonContent[0][10].count > 0 {
-                                images_str = jsonContent[0][10][0].string!
-                            }
-                            
-                            var images_arr = []
-                            
-                            if(!images_str.isEqualToString("")){
-                                images_arr = [images_str]
-                            }
-                            
-                            let creply : NSInteger = 0
-                            let hot_threaded : NSInteger = 0
-                            let shortlink : NSString = ""
-                            let pinned : NSInteger = 0
-                            
-                            var sent_from : NSInteger = 0
-                            if let sent_fromTemp : NSInteger? = jsonContent[0][15].int {
-                                sent_from = sent_fromTemp!
-                            }
-                            
-                            var act_date_before : NSInteger = 0
-                            if let act_date_beforeTemp : NSInteger? = jsonContent[0][16].int {//element index #16
-                                act_date_before = act_date_beforeTemp!
-                            }
-                            
-                            let mention_arr = []
-                            let mention_arr_reply = []
-                            let collection_count : NSInteger = 0
-                            let nbed : NSInteger = 0
-                            
-                            var post_date : NSString = "0"
-                            if let post_dateTemp : NSString? = jsonContent[0][21].string {
-                                post_date = post_dateTemp!
-                            }
-                            
-                            var gender : NSInteger = 0
-                            if let genderTemp : NSInteger? = jsonContent[0][22].int {
-                                gender = genderTemp!
-                            }
-                            
-                            let jsonDict = ["content" :
-                                [
-                                    [
-                                        replier
-                                        ,poster
-                                        ,post
-                                        ,reply
-                                        ,cat_id
-                                        ,act_date
-                                        ,post_id
-                                        ,cd
-                                        ,pp
-                                        ,rep_id
-                                        ,images_arr
-                                        ,creply
-                                        ,hot_threaded
-                                        ,shortlink
-                                        ,pinned
-                                        ,sent_from
-                                        ,act_date_before
-                                        ,mention_arr
-                                        ,mention_arr_reply
-                                        ,collection_count
-                                        ,nbed
-                                        ,post_date
-                                        ,gender
-                                    ]
-                                ]
-                            ]
-
-                            self.socket.emit("message post",jsonDict)
-                            
-                            sendTextview.text = "";
-                            sendTextview.resignFirstResponder()
-                        }else{
-                            println("failed2")
-                        }
+            if(self.validateBeforePost()){
+                if uploadImgView.image != nil {
+                    self.sendPostImage()
                 }
+                self.sendPostMessage()
             }
+        }
+    }
+    
+    func sendPostImage(){
+        // init paramters Dictionary
+        var parameters = [
+            "task": "task",
+            "variable1": "var"
+        ]
+        
+        // add addtionial parameters
+        parameters["userId"] = "27"
+        parameters["body"] = "This is the body text."
+        
+        // example image data
+        //        let image = UIImage(named: "177143.jpg")
+        let image = uploadImgView.image
+        let imageData = UIImagePNGRepresentation(image)
+        
+        // CREATE AND SEND REQUEST ----------
+        
+        let urlRequest = urlRequestWithComponents(GlobalVariables().serverUrl+"/upload_alamofire.php", parameters: parameters, imageData: imageData)
+        
+        Alamofire.upload(urlRequest.0, urlRequest.1)
+            .progress { (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
+                println("\(totalBytesWritten) / \(totalBytesExpectedToWrite)")
+            }
+            .responseJSON { (request, response, JSON, error) in
+                println("REQUEST \(request)")
+                println("RESPONSE \(response)")
+                println("JSON \(JSON)")
+                println("ERROR \(error)")
         }
     }
     
@@ -276,7 +213,7 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
         self.socket.on("message"){[weak self] data, ack in
             println("got message! \(data?[0])")
             
-            self?.appendText("\(data![0])")
+            //            self?.appendText("\(data![0])")
             
         }
         self.socket.on("message post"){[weak self] dataPost, ack in
@@ -325,7 +262,7 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
         var dataFromNetwork:NSData! = jsonData.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         
         let jsonDict : NSDictionary? = NSJSONSerialization.JSONObjectWithData(dataFromNetwork, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary
-
+        
         
         let json = ( isPost ? JSON(jsonDict!) : JSON(data: dataFromNetwork))
         
@@ -335,10 +272,10 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
         
         
         let contentJSON = ( isPost ? json["content"][0] : json[0] )
-
+        
         //        println("2------------")
         //        println(contentJSON)
-
+        
         self.generateFeedsFinal(contentJSON)
     }
     
@@ -375,21 +312,29 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
             rowText =  "\(replier) replied \(poster) > \" \(reply)\""
         }
         
-//        self.appendText(rowText as String)
+        var postImg : NSString = ""
         
-        threadList.append(CTModel(titleName:rowText as String, categoryName:"today",idImg:"Barack-Obama.jpg"))
+        if(contentJSON[10].count > 0){
+            if let postImgTemp : NSString? = contentJSON[10][0].string {
+                postImg = postImgTemp!
+            }
+        }
+        
+        //        if let postImgTemp : NSString? = contentJSON[10].string {
+        //            postImg = postImgTemp!
+        //        }
+        //
+        //        if(!postImg.isEqualToString("") && !postImg.isEqualToString("[]")){
+        //            postImg =
+        //        }
+        
+        let threadNew : [CTModel] = [CTModel(titleName:rowText, categoryName:"today",idImg:"Barack-Obama.jpg",postImg: postImg)]
+        
+        threadList = threadNew + threadList
         
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.tableView.reloadData()
         })
-    }
-    
-    func appendText(chat : String){
-        if(chatTextview.text == ""){
-            chatTextview.text = chat
-        }else{
-            chatTextview.text = chatTextview.text + "\n"+chat
-        }
     }
     
     func isLoggedIn() ->Bool{
@@ -449,7 +394,7 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
             
             self.showAlert(requestName+" Failed!", message: msg)
         }
-
+        
         return nil
     }
     
@@ -460,5 +405,210 @@ class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate  {
         alertView.delegate = self
         alertView.addButtonWithTitle("OK")
         alertView.show()
+    }
+    
+    func urlRequestWithComponents(urlString:String, parameters:Dictionary<String, String>, imageData:NSData) -> (URLRequestConvertible, NSData) {
+        
+        // create url request to send
+        var mutableURLRequest = NSMutableURLRequest(URL: NSURL(string: urlString)!)
+        mutableURLRequest.HTTPMethod = Alamofire.Method.POST.rawValue
+        let boundaryConstant = "myRandomBoundary12345";
+        let contentType = "multipart/form-data;boundary="+boundaryConstant
+        mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        
+        
+        
+        // create upload data to send
+        let uploadData = NSMutableData()
+        
+        // add image
+        uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        uploadData.appendData("Content-Disposition: form-data; name=\"file\"; filename=\"file.png\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        uploadData.appendData("Content-Type: image/png\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        uploadData.appendData(imageData)
+        
+        // add parameters
+        for (key, value) in parameters {
+            uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            uploadData.appendData("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        
+        
+        // return URLRequestConvertible and NSData
+        return (Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: nil).0, uploadData)
+    }
+    
+    func validateBeforePost() -> Bool {
+        var post:NSString = sendTextview.text
+        if ( post.isEqualToString("")) {
+            self.showAlert("Post Failed!", message: "Please write something")
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    func sendPostMessage(){
+        var post:NSString = sendTextview.text
+        let globalVariables = GlobalVariables()
+        
+        let uname:NSString = self.getXN()
+        
+        var postData:NSString = "x=\(uname)&y=3&z=\(post)&i=&u=&im=&s=3"
+        
+        if let responseData:NSData? = askServer("Post", url: globalVariables.serverUrl+"/stock_tab6_post_status.php", postData: postData){
+            
+            let responseNSStr:NSString  = NSString(data:responseData!, encoding:NSUTF8StringEncoding)!
+            
+            let responseStr :String = responseNSStr as String
+            
+            println(responseStr)
+            
+            let responseMsg: NSString = responseStr.substringFromIndex(advance(responseStr.startIndex,3))
+            
+            let responseStat: NSString = responseStr.substringToIndex(advance(responseStr.startIndex, 1))
+            if(responseStat.isEqualToString("1")){
+                
+                var error: NSError?
+                
+                var dataFromNetwork:NSData! = responseMsg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+                
+                let jsonContent = JSON(data: dataFromNetwork)
+                
+                println("1------------")
+                println(jsonContent)
+                
+                var replier : NSString = "null"
+                if let replierTemp : NSString? = jsonContent[0][0].string {
+                    replier = replierTemp!
+                }
+                
+                var poster : NSString = "null"
+                if let posterTemp : NSString? = jsonContent[0][1].string {
+                    poster = posterTemp!
+                }
+                
+                var post : NSString = "null"
+                if let postTemp : NSString? = jsonContent[0][2].string {
+                    post = postTemp!
+                }
+                
+                var reply : NSString = "null"
+                if let replyTemp : NSString? = jsonContent[0][3].string {
+                    reply = replyTemp!
+                }
+                
+                var cat_id : NSInteger = 0
+                if let cat_idTemp : NSInteger? = jsonContent[0][4].int {
+                    cat_id = cat_idTemp!
+                }
+                
+                var act_date : NSInteger = 0
+                if let act_dateTemp : NSInteger? = jsonContent[0][5].int {
+                    act_date = act_dateTemp!
+                }
+                
+                var post_id : NSInteger = 0
+                if let post_idTemp : NSInteger? = jsonContent[0][6].int {
+                    post_id = post_idTemp!
+                }
+                
+                let cd : NSInteger = 0
+                
+                var pp : NSString = "bullsmile.png"
+                if let ppTemp : NSString? = jsonContent[0][8].string {
+                    pp = ppTemp!
+                }
+                
+                var rep_id : NSInteger = 0
+                if let rep_idTemp : NSInteger? = jsonContent[0][9].int {
+                    rep_id = rep_idTemp!
+                }
+                
+                var images_str : NSString = ""
+                if jsonContent[0][10].count > 0 {
+                    images_str = jsonContent[0][10][0].string!
+                }
+                
+                var images_arr = []
+                
+                if(!images_str.isEqualToString("")){
+                    images_arr = [images_str]
+                }
+                
+                let creply : NSInteger = 0
+                let hot_threaded : NSInteger = 0
+                let shortlink : NSString = ""
+                let pinned : NSInteger = 0
+                
+                var sent_from : NSInteger = 0
+                if let sent_fromTemp : NSInteger? = jsonContent[0][15].int {
+                    sent_from = sent_fromTemp!
+                }
+                
+                var act_date_before : NSInteger = 0
+                if let act_date_beforeTemp : NSInteger? = jsonContent[0][16].int {//element index #16
+                    act_date_before = act_date_beforeTemp!
+                }
+                
+                let mention_arr = []
+                let mention_arr_reply = []
+                let collection_count : NSInteger = 0
+                let nbed : NSInteger = 0
+                
+                var post_date : NSString = "0"
+                if let post_dateTemp : NSString? = jsonContent[0][21].string {
+                    post_date = post_dateTemp!
+                }
+                
+                var gender : NSInteger = 0
+                if let genderTemp : NSInteger? = jsonContent[0][22].int {
+                    gender = genderTemp!
+                }
+                
+                let jsonDict = ["content" :
+                    [
+                        [
+                            replier
+                            ,poster
+                            ,post
+                            ,reply
+                            ,cat_id
+                            ,act_date
+                            ,post_id
+                            ,cd
+                            ,pp
+                            ,rep_id
+                            ,images_arr
+                            ,creply
+                            ,hot_threaded
+                            ,shortlink
+                            ,pinned
+                            ,sent_from
+                            ,act_date_before
+                            ,mention_arr
+                            ,mention_arr_reply
+                            ,collection_count
+                            ,nbed
+                            ,post_date
+                            ,gender
+                        ]
+                    ]
+                ]
+                
+                self.socket.emit("message post",jsonDict)
+                
+                sendTextview.text = "";
+                sendTextview.resignFirstResponder()
+                
+                if uploadImgView.image != nil {
+                    self.clearUploadImg()
+                }
+            }else{
+                println("failed2")
+            }
+        }
     }
 }

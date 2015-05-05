@@ -16,12 +16,12 @@ struct GlobalVariables {
     let socketUrl : String
     
     init(){
-        serverIP = "192.168.0.103"
+        serverIP = "192.168.0.104"
         serverUrl = "http://"+serverIP+"/fsocialm"
         
 //        serverIP = "bei5000.com"
 //        serverUrl = "http://m.bei5000.com"
         serverUrlDesktop = "http://"+serverIP+"/fsocial"
-        socketUrl = "http://"+serverIP+":xxxx"
+        socketUrl = "http://"+serverIP+":8080"
     }
 }

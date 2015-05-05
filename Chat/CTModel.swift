@@ -13,12 +13,14 @@ class CTModel: NSObject {
     var titleName:NSString      //タイトルネーム
     var categoryName:NSString   //カテゴリネーム
     var idImg:NSString
+    var postImg:NSString
     
     // initialize
-    init(titleName: String, categoryName: String, idImg: String) {
+    init(titleName: NSString, categoryName: NSString, idImg: NSString, postImg: NSString) {
         self.titleName = titleName
         self.categoryName = categoryName
         self.idImg = idImg
+        self.postImg = postImg
     }
     
 
