@@ -38,6 +38,7 @@
 		B9FF031D1AEA029900C8B471 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9FF03141AEA024300C8B471 /* Alamofire.framework */; };
 		B9FF031E1AEA029900C8B471 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9FF03141AEA024300C8B471 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B9FF032F1AEA193A00C8B471 /* removeicon.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF032E1AEA193A00C8B471 /* removeicon.png */; };
+		B9FF03331AF9B9A700C8B471 /* SingleThreadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +142,7 @@
 		B9FF02B71AE9F57900C8B471 /* cameraicon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cameraicon.gif; sourceTree = "<group>"; };
 		B9FF030C1AEA024300C8B471 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = "Libs/Alamofire-master/Alamofire.xcodeproj"; sourceTree = "<group>"; };
 		B9FF032E1AEA193A00C8B471 /* removeicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = removeicon.png; sourceTree = "<group>"; };
+		B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleThreadVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +222,7 @@
 				B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */,
 				B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */,
 				B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */,
+				B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -436,6 +439,7 @@
 				B9051C7E1AE6B06C000FF5BE /* SocketEngine.swift in Sources */,
 				B9051C871AE6B06C000FF5BE /* WebSocket.swift in Sources */,
 				B9051C831AE6B06C000FF5BE /* SocketPacket.swift in Sources */,
+				B9FF03331AF9B9A700C8B471 /* SingleThreadVC.swift in Sources */,
 				B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */,
 				B9E30F671AE4D57C008FF89D /* HomeCustomSegue.swift in Sources */,
 				B9051C821AE6B06C000FF5BE /* SocketIOClient.swift in Sources */,
