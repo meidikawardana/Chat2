@@ -187,7 +187,6 @@
 			isa = PBXGroup;
 			children = (
 				B9FF030C1AEA024300C8B471 /* Alamofire.xcodeproj */,
-				B9FF02BC1AEA01CE00C8B471 /* Libs */,
 				B9ED837A1AE09C2400B60227 /* Chat */,
 				B9ED83901AE09C2500B60227 /* ChatTests */,
 				B9ED83791AE09C2400B60227 /* Products */,
@@ -260,13 +259,6 @@
 				B9FF02B11AE8E5C600C8B471 /* bullsmile.png */,
 			);
 			name = Images;
-			sourceTree = "<group>";
-		};
-		B9FF02BC1AEA01CE00C8B471 /* Libs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Libs;
 			sourceTree = "<group>";
 		};
 		B9FF030D1AEA024300C8B471 /* Products */ = {
