@@ -134,6 +134,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             ]
             
             self.socket.emit("add user", jsonLogin)
+            
+            self.appendFeeds()
         }
     }
     
@@ -245,14 +247,14 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         let json = JSON(jsonData)
         
         let contentJSON = json["content"][0]
-        self.generateFeedsFinal(contentJSON)
+        self.generateFeedsFinal(contentJSON,isAppend: false)
     }
     
     func generateFeedsFromArr(jsonData : NSArray){
         let json = JSON(jsonData)
         
         let contentJSON = json[0]
-        self.generateFeedsFinal(contentJSON)
+        self.generateFeedsFinal(contentJSON,isAppend: false)
     }
     
     func generateFeeds(jsonData : NSString, isPost: Bool){
@@ -276,10 +278,10 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         //        println("2------------")
         //        println(contentJSON)
         
-        self.generateFeedsFinal(contentJSON)
+        self.generateFeedsFinal(contentJSON,isAppend: false)
     }
     
-    func generateFeedsFinal(contentJSON: JSON){
+    func generateFeedsFinal(contentJSON: JSON, isAppend : Bool){
         var replier : NSString = ""
         if let replierTemp : NSString? = contentJSON[0].string {
             replier = replierTemp!
@@ -320,17 +322,30 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             }
         }
         
-        //        if let postImgTemp : NSString? = contentJSON[10].string {
-        //            postImg = postImgTemp!
-        //        }
-        //
-        //        if(!postImg.isEqualToString("") && !postImg.isEqualToString("[]")){
-        //            postImg =
-        //        }
+        var idImg : NSString = ""
+        if let idImgTemp : NSString? = contentJSON[8].string {
+            idImg = idImgTemp!
+        }
         
-        let threadNew : [CTModel] = [CTModel(titleName:rowText, categoryName:"today",idImg:"Barack-Obama.jpg",postImg: postImg)]
+        if !self.shouldUseDrawable(idImg) {
+            idImg = GlobalVariables().serverUrlDesktop + "/uploaded_images/profpic/" + (idImg as String)
+        }
         
-        threadList = threadNew + threadList
+        
+        var actDateInt : Int = -1
+        if let actDateIntTemp : Int = contentJSON[5].int {
+            actDateInt = actDateIntTemp
+        }
+        
+        //        println("-----idmg:\(idImg)")
+        
+        let threadNew : [CTModel] = [CTModel(titleName:rowText, categoryName:self.getTimeF(actDateInt),idImg:idImg,postImg: postImg)]
+        
+        if !isAppend {
+            threadList = threadNew + threadList
+        }else{
+            threadList = threadList + threadNew
+        }
         
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.tableView.reloadData()
@@ -396,15 +411,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         }
         
         return nil
-    }
-    
-    func showAlert(title:String,message:String){
-        var alertView:UIAlertView = UIAlertView()
-        alertView.title = title
-        alertView.message = message
-        alertView.delegate = self
-        alertView.addButtonWithTitle("OK")
-        alertView.show()
     }
     
     func urlRequestWithComponents(urlString:String, parameters:Dictionary<String, String>, imageData:NSData) -> (URLRequestConvertible, NSData) {
@@ -610,5 +616,149 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                 println("failed2")
             }
         }
+    }
+    
+    func appendFeeds(){
+        let globalVariables = GlobalVariables()
+        
+        
+        var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=0&use_collection_clause=1"
+        
+        NSLog("PostData: %@",post);
+        
+        let urlString : String = globalVariables.serverUrlDesktop+"/_wall_json_android_2.php"
+        
+        NSLog("URL: %@",urlString);
+        
+        var url:NSURL = NSURL(string:urlString)!
+        
+        var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+        
+        var postLength:NSString = String( postData.length )
+        
+        var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.HTTPBody = postData
+        request.setValue(postLength as String, forHTTPHeaderField: "Content-Length")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        
+        var reponseError: NSError?
+        var response: NSURLResponse?
+        
+        var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+        
+        if ( urlData != nil ) {
+            let res = response as! NSHTTPURLResponse!;
+            
+            NSLog("Response code: %ld", res.statusCode);
+            
+            if (res.statusCode >= 200 && res.statusCode < 300)
+            {
+                var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
+                
+                //                NSLog("Response Feeds ==> %@", responseData);
+                
+                var error: NSError?
+                
+                let jsonArr:NSArray = NSJSONSerialization.JSONObjectWithData(urlData!, options:NSJSONReadingOptions.MutableContainers , error: &error) as! NSArray
+                
+                for jsonPiece : AnyObject in jsonArr {
+                    let json = JSON(jsonPiece as! NSArray)
+                    
+                    self.generateFeedsFinal(json,isAppend: true)
+                }
+                
+            } else {
+                self.showAlert("Failed to get chat history", message: "Connection Failed")
+            }
+        } else {
+            if let error = reponseError {
+                self.showAlert("Failed to get chat history", message: error.localizedDescription)
+            }else{
+                self.showAlert("Failed to get chat history", message: "Connection Failure")
+            }
+        }
+    }
+    
+    func showAlert(title:String,message:String){
+        var alertView:UIAlertView = UIAlertView()
+        alertView.title = title
+        alertView.message = message
+        alertView.delegate = self
+        alertView.addButtonWithTitle("OK")
+        alertView.show()
+    }
+    
+    func shouldUseDrawable(idImg: NSString) -> Bool {
+        var useDrawable = idImg.isEqualToString("bullsmile.png")
+        
+        if idImg.isEqualToString("") {
+            useDrawable = true
+        }
+        
+        if idImg.isEqualToString("null") {
+            useDrawable = true
+        }
+        
+        if idImg.isEqualToString("bullsmile_profpic.png") {
+            useDrawable = true
+        }
+        
+        return useDrawable
+    }
+    
+    func getTimeF(utParam: Int) -> String {
+        let ut : NSTimeInterval = (String(utParam) as NSString).doubleValue
+        let start = NSDate(timeIntervalSince1970: ut)
+        let enddt = NSDate()
+        let calendar = NSCalendar.currentCalendar()
+        let datecomponenets = calendar.components(NSCalendarUnit.CalendarUnitSecond, fromDate: start, toDate: enddt, options: nil)
+        let diff = datecomponenets.second
+        
+        if (diff <= 1) {
+            return "a second ago";
+        } else if (diff < 60) {
+            return String(diff) + " seconds ago"
+        } else if (diff >= 60 && diff < 120) {
+            return "1 min ago"
+        } else if (diff >= 120 && diff < 3600) {
+            return String(diff / 60) + " mins ago"
+        } else if (diff >= 3600 && diff < 7200) {
+            return "an hour ago"
+        } else if (diff >= 7200 && diff < 86400) {
+            return String(diff / 3600) + " hours ago"
+        } else if (diff >= 86400 && diff < 172800) {
+            return "Yesterday" + formatTime(String(utParam), version: 2)
+        } else if (diff >= 172800) {
+            return formatTime(String(utParam), version: 1)
+        }
+        return String(utParam)
+    }
+    
+    func formatTime(unixTimestamp : NSString, version : Int) -> String {
+        //    try {
+        let dv : NSTimeInterval = (unixTimestamp).doubleValue * 1000;// its need to be in milisecond
+        let dt = NSDate(timeIntervalSince1970: dv)
+        
+        var dateFormater : NSDateFormatter = NSDateFormatter()
+        dateFormater.dateFormat = (version == 1) ? "MMM dd yyyy hh:mma" : "hh:mma"
+        
+//        String format = (version == 1) ? "MMM dd yyyy hh:mma" : "hh:mma";
+//        
+//        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+//        
+        if (version == 1) {
+            return dateFormater.stringFromDate(dt)
+        } else {
+            return " at " + dateFormater.stringFromDate(dt)
+        }
+        
+        
+        //    } catch (NumberFormatException e) {
+        //    Log.e("thread_ex",e.toString()+"#"+unixTimestamp+"#"+String.valueOf(unixTimestamp.equals("-1")));
+        //    return "some moments ago";
+        //    }
     }
 }

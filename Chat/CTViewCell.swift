@@ -37,36 +37,33 @@ class CTViewCell: UITableViewCell {
         contentLabel.text = texts.titleName as String
         dateLabel.text = texts.categoryName as String
         
-        idImageView.image = UIImage(named: "bullsmile.png")
+        self.idImageView.image = UIImage(named:  "bullsmile.png")
+        
+        if !texts.idImg.isEqualToString("") {
+            ImageLoader.sharedLoader.imageForUrl(self.getActualImg(texts.idImg) as String, completionHandler:{(image: UIImage?, url: String) in
+                
+                if !(image == nil) {
+                    self.idImageView.image = image!
+                }
+            })
+        }
         
         let postImg: NSString = texts.postImg
         if postImg.isEqualToString("") {
             self.postImageView.image = nil
-            //            self.postImageView.hidden = true
             
             self.postImageView.removeConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 119))
             
             self.postImageView.addConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
         }else{
-            
             self.postImageView.addConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 119))
             
-            //            self.postImageView.hidden = false
             println("\( self.getActualImg(postImg) )")
             
             ImageLoader.sharedLoader.imageForUrl(self.getActualImg(postImg) as String, completionHandler:{(image: UIImage?, url: String) in
                 self.postImageView.image = image!
-                //                let imageView = UIImageView(image: image!)
-                //
-                //                imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 200)
-                //
-                //                imageView.add
-                //
-                //                self.postImageView = imageView
             })
         }
-        
-        //    idImageView.image = UIImage(named: texts.idImg as String)
     }
     
     func getActualImg(url:NSString) ->NSString{
