@@ -10,7 +10,15 @@ import UIKit
 
 class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet var bottomSpacingConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomViewB2: NSLayoutConstraint!
+//    @IBOutlet var bottomViewB: NSLayoutConstraint!
+    
+//    @IBOutlet var bottomSpacingConstraint: NSLayoutConstraint!
+//    
+//    @IBOutlet var btmSpacingConstraintCamera: NSLayoutConstraint!
+//    
+//    @IBOutlet var btmSpacingConstraintBtn: NSLayoutConstraint!
+    
     
     @IBOutlet var idImgView: UIImageView!
     
@@ -19,10 +27,10 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     @IBOutlet var postLbl: UILabel!
     @IBOutlet var postImgView: UIImageView!
     
-    @IBOutlet var bottomSpacingConstraintImg: NSLayoutConstraint!
-    
-    
-    @IBOutlet var bottomSpacingConstraintBtn: NSLayoutConstraint!
+//    @IBOutlet var bottomSpacingConstraintImg: NSLayoutConstraint!
+//    
+//    
+//    @IBOutlet var bottomSpacingConstraintBtn: NSLayoutConstraint!
     
     @IBAction func backAction(sender: UIBarButtonItem) {
         self.dismissViewControllerAnimated(false, completion: nil)
@@ -42,8 +50,13 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardWillShowNotification, object: nil);
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardWillHideNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidHideNotification, object: nil);
+        
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+        
+//        self.bottomSpacingConstraintBtn?.constant = 50.0
         
         self.idImgView.image = UIImage(named:  "bullsmile.png")
         
@@ -82,6 +95,42 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         self.appendFeeds()
         
+    }
+    
+    func keyboardNotification(notification: NSNotification) {
+        
+        let isShowing = notification.name == UIKeyboardDidShowNotification
+        
+        println("------1\(isShowing)")
+        
+        if let userInfo = notification.userInfo {
+            
+            println("------2")
+            
+            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue()
+            let endFrameHeight = endFrame?.size.height ?? 0.0
+//            let duration:NSTimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+//            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+//            let animationCurveRaw = animationCurveRawNSN?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
+//            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+            
+            println("values: \(self.bottomViewB2?.constant) \(endFrameHeight)")
+            
+            self.bottomViewB2?.constant = isShowing ? endFrameHeight : 0.0
+            
+            
+//            self.btmSpacingConstraintCamera?.constant = isShowing ? endFrameHeight + 12.0 : 8.0
+//            self.btmSpacingConstraintBtn?.constant = isShowing ? endFrameHeight + 8.0 : 8.0
+            
+            
+            println("values after: \(self.bottomViewB2?.constant) \(endFrameHeight)")
+            
+//            UIView.animateWithDuration(duration,
+//                delay: NSTimeInterval(0),
+//                options: animationCurve,
+//                animations: { self.view.layoutIfNeeded() },
+//                completion: nil)
+        }
     }
     
     // セクション数
@@ -171,37 +220,9 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         // Dispose of any resources that can be recreated.
     }
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func keyboardNotification(notification: NSNotification) {
-        
-        let isShowing = notification.name == UIKeyboardWillShowNotification
-        
-        println("------1\(isShowing)")
-        
-        if let userInfo = notification.userInfo {
-            
-            println("------2")
-            
-            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue()
-            let endFrameHeight = endFrame?.size.height ?? 0.0
-            let duration:NSTimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
-            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
-            let animationCurveRaw = animationCurveRawNSN?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
-            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
-            self.bottomSpacingConstraint?.constant = isShowing ? endFrameHeight+8.0 : 8.0
-            self.bottomSpacingConstraintImg?.constant = isShowing ? endFrameHeight+12.0 : 8.0
-            self.bottomSpacingConstraintBtn?.constant = isShowing ? endFrameHeight+8.0 : 8.0
-            UIView.animateWithDuration(duration,
-                delay: NSTimeInterval(0),
-                options: animationCurve,
-                animations: { self.view.layoutIfNeeded() },
-                completion: nil)
-        }
-    }
-    
+//    deinit {
+//        NSNotificationCenter.defaultCenter().removeObserver(self)
+//    }
     
     /*
     // MARK: - Navigation

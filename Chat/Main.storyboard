@@ -170,17 +170,6 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="An7-vc-DRt" userLabel="mainCloseBtn">
-                                <rect key="frame" x="59" y="172" width="16" height="18"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <state key="normal" image="removeicon.png">
-                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="btnRemoveImgTapped:" destination="Zoy-ap-umt" eventType="touchUpInside" id="lUJ-FI-v5f"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vzg-cb-v09">
                                 <rect key="frame" x="16" y="72" width="0.0" height="35"/>
                                 <constraints>
@@ -211,6 +200,17 @@
                                     <constraint firstAttribute="height" constant="40" id="P3F-nS-am3"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="An7-vc-DRt" userLabel="mainCloseBtn">
+                                <rect key="frame" x="59" y="172" width="16" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" image="removeicon.png">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnRemoveImgTapped:" destination="Zoy-ap-umt" eventType="touchUpInside" id="lUJ-FI-v5f"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.68573928809999996" green="0.88669281909999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -294,37 +294,6 @@
                                     <constraint firstAttribute="height" constant="75" id="MPJ-gs-gDb" userLabel="mainPostImgH"/>
                                 </constraints>
                             </imageView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tsz-V1-uiN" userLabel="ReplyTextField">
-                                <rect key="frame" x="46" y="442" width="204" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="30" id="jQ5-Ol-Jlg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lvD-rs-jyJ">
-                                <rect key="frame" x="258" y="442" width="46" height="30"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="46" id="s47-mb-hg5"/>
-                                </constraints>
-                                <state key="normal" title="Reply">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v9K-Sd-Jhf">
-                                <rect key="frame" x="16" y="448" width="22" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="IYd-Bc-tOR"/>
-                                    <constraint firstAttribute="width" constant="22" id="bg8-Wb-YaF"/>
-                                </constraints>
-                                <state key="normal" image="cameraicon.gif">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="uploadImgTapped:" destination="Zoy-ap-umt" eventType="touchUpInside" id="j88-L6-7dy"/>
-                                </connections>
-                            </button>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ka-na-L4i" userLabel="Post View">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
                                 <constraints>
@@ -434,12 +403,6 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5We-CH-cfp" userLabel="PostImage">
-                                                    <rect key="frame" x="66" y="64" width="214" height="112"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="112" id="pug-59-3rn"/>
-                                                    </constraints>
-                                                </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="750" text="Poster" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jgU-gi-t4F">
                                                     <rect key="frame" x="66" y="8" width="214" height="18"/>
                                                     <color key="backgroundColor" red="0.77118101130000005" green="1" blue="0.91447273529999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -455,6 +418,12 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="bI8-1l-igw"/>
                                                         <constraint firstAttribute="width" constant="50" id="jd1-f0-kl8"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5We-CH-cfp" userLabel="PostImage">
+                                                    <rect key="frame" x="66" y="64" width="214" height="112"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="112" id="pug-59-3rn"/>
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
@@ -493,21 +462,67 @@
                                     <constraint firstAttribute="width" constant="50" id="keB-mJ-YX8" userLabel="mainIdImgW"/>
                                 </constraints>
                             </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nIo-L5-PA0" userLabel="bottomView">
+                                <rect key="frame" x="0.0" y="440" width="320" height="40"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lvD-rs-jyJ">
+                                        <rect key="frame" x="266" y="5" width="46" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="dI1-kK-uD0"/>
+                                            <constraint firstAttribute="width" constant="46" id="peB-7J-UVp"/>
+                                        </constraints>
+                                        <state key="normal" title="Reply">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleAspectFit" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v9K-Sd-Jhf" userLabel="replyCameraBtn">
+                                        <rect key="frame" x="8" y="11" width="22" height="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="17" id="IYd-Bc-tOR"/>
+                                            <constraint firstAttribute="width" constant="22" id="bg8-Wb-YaF"/>
+                                        </constraints>
+                                        <state key="normal" image="cameraicon.gif">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="uploadImgTapped:" destination="Zoy-ap-umt" eventType="touchUpInside" id="j88-L6-7dy"/>
+                                        </connections>
+                                    </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="utC-Y4-dE9" userLabel="replyTxt">
+                                        <rect key="frame" x="38" y="5" width="220" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.62745098039215685" green="0.85882352941176465" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="utC-Y4-dE9" secondAttribute="bottom" constant="5" id="1gF-sm-a1J"/>
+                                    <constraint firstItem="utC-Y4-dE9" firstAttribute="leading" secondItem="v9K-Sd-Jhf" secondAttribute="trailing" constant="8" id="4Qz-Kf-6B0"/>
+                                    <constraint firstItem="utC-Y4-dE9" firstAttribute="top" secondItem="nIo-L5-PA0" secondAttribute="top" constant="5" id="8wx-3g-rhu"/>
+                                    <constraint firstAttribute="trailing" secondItem="lvD-rs-jyJ" secondAttribute="trailing" constant="8" id="CWG-6U-IIX"/>
+                                    <constraint firstAttribute="centerY" secondItem="utC-Y4-dE9" secondAttribute="centerY" id="CgR-9V-gAP"/>
+                                    <constraint firstItem="v9K-Sd-Jhf" firstAttribute="leading" secondItem="nIo-L5-PA0" secondAttribute="leading" constant="8" id="GgY-N1-7mb"/>
+                                    <constraint firstAttribute="centerY" secondItem="lvD-rs-jyJ" secondAttribute="centerY" id="g4r-pI-16c"/>
+                                    <constraint firstAttribute="centerY" secondItem="v9K-Sd-Jhf" secondAttribute="centerY" id="hhQ-kx-bgV"/>
+                                    <constraint firstAttribute="height" constant="40" id="mI7-v0-VUA"/>
+                                    <constraint firstItem="lvD-rs-jyJ" firstAttribute="leading" secondItem="utC-Y4-dE9" secondAttribute="trailing" constant="8" id="pOc-ml-UMA"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="6ka-na-L4i" secondAttribute="trailing" id="1Dx-ts-kMF"/>
                             <constraint firstItem="nqK-XV-v9Q" firstAttribute="top" secondItem="6ka-na-L4i" secondAttribute="bottom" constant="8" id="4pf-PV-Bll"/>
-                            <constraint firstItem="v9K-Sd-Jhf" firstAttribute="leading" secondItem="pXp-kL-otu" secondAttribute="leading" constant="16" id="5K7-kO-yT9"/>
                             <constraint firstItem="ktX-eT-5Uz" firstAttribute="top" secondItem="nqK-XV-v9Q" secondAttribute="bottom" constant="8" symbolic="YES" id="5oQ-t6-BlL"/>
+                            <constraint firstAttribute="trailing" secondItem="nIo-L5-PA0" secondAttribute="trailing" id="7dU-gQ-SMk"/>
                             <constraint firstItem="gvH-p9-Nv5" firstAttribute="top" secondItem="6ka-na-L4i" secondAttribute="bottom" constant="8" id="9Ae-3k-htq" userLabel="mainIdImgT"/>
                             <constraint firstItem="6ka-na-L4i" firstAttribute="leading" secondItem="pXp-kL-otu" secondAttribute="leading" id="A08-A8-CXE"/>
-                            <constraint firstItem="tsz-V1-uiN" firstAttribute="leading" secondItem="v9K-Sd-Jhf" secondAttribute="trailing" constant="8" id="MJz-Ls-NEP"/>
-                            <constraint firstAttribute="trailing" secondItem="lvD-rs-jyJ" secondAttribute="trailing" constant="16" id="QBf-4g-d7o"/>
                             <constraint firstItem="ktX-eT-5Uz" firstAttribute="top" secondItem="gWP-2y-wJN" secondAttribute="bottom" constant="8" symbolic="YES" id="R6T-JK-A9T"/>
                             <constraint firstItem="ktX-eT-5Uz" firstAttribute="trailing" secondItem="nqK-XV-v9Q" secondAttribute="trailing" id="SCL-xz-XI4"/>
-                            <constraint firstItem="3YU-Va-Luv" firstAttribute="top" secondItem="lvD-rs-jyJ" secondAttribute="bottom" constant="8" id="Ufy-oU-SZ4"/>
                             <constraint firstAttribute="trailing" secondItem="pGG-oR-JF8" secondAttribute="trailing" constant="16" id="VAZ-tb-S3x"/>
+                            <constraint firstItem="nIo-L5-PA0" firstAttribute="leading" secondItem="pXp-kL-otu" secondAttribute="leading" id="W1U-mv-8om"/>
+                            <constraint firstAttribute="bottom" secondItem="nIo-L5-PA0" secondAttribute="bottom" id="ZQu-SI-cLm" userLabel="bottomViewB2"/>
                             <constraint firstItem="gWP-2y-wJN" firstAttribute="top" secondItem="6ka-na-L4i" secondAttribute="bottom" constant="8" id="Zjh-hE-8ds"/>
                             <constraint firstItem="6ka-na-L4i" firstAttribute="top" secondItem="pXp-kL-otu" secondAttribute="top" id="aDw-jf-xsY"/>
                             <constraint firstItem="gWP-2y-wJN" firstAttribute="leading" secondItem="gvH-p9-Nv5" secondAttribute="trailing" constant="8" id="c4v-sg-eJI" userLabel="mainIdImgR"/>
@@ -515,11 +530,8 @@
                             <constraint firstItem="MSA-LC-CFN" firstAttribute="top" secondItem="ktX-eT-5Uz" secondAttribute="bottom" constant="8" id="emw-B2-wyt" userLabel="mainPostImgT"/>
                             <constraint firstItem="pGG-oR-JF8" firstAttribute="top" secondItem="MSA-LC-CFN" secondAttribute="bottom" constant="8" id="esq-sT-u6d" userLabel="mainPostImgB"/>
                             <constraint firstItem="6ka-na-L4i" firstAttribute="centerX" secondItem="pGG-oR-JF8" secondAttribute="centerX" id="fOq-JA-ndX"/>
-                            <constraint firstItem="3YU-Va-Luv" firstAttribute="top" secondItem="tsz-V1-uiN" secondAttribute="bottom" constant="8" id="gdg-Fc-899"/>
-                            <constraint firstItem="lvD-rs-jyJ" firstAttribute="leading" secondItem="tsz-V1-uiN" secondAttribute="trailing" constant="8" id="h8P-tk-XuD"/>
                             <constraint firstItem="MSA-LC-CFN" firstAttribute="leading" secondItem="pXp-kL-otu" secondAttribute="leading" constant="74" id="iqg-oQ-kaj" userLabel="mainPostImgL"/>
                             <constraint firstItem="nqK-XV-v9Q" firstAttribute="leading" secondItem="gWP-2y-wJN" secondAttribute="trailing" constant="8" id="jZ4-S8-H2h"/>
-                            <constraint firstItem="3YU-Va-Luv" firstAttribute="top" secondItem="v9K-Sd-Jhf" secondAttribute="bottom" constant="15" id="l1J-EB-juR"/>
                             <constraint firstItem="3YU-Va-Luv" firstAttribute="top" secondItem="pGG-oR-JF8" secondAttribute="bottom" constant="46" id="pPl-tF-OPC"/>
                             <constraint firstItem="ktX-eT-5Uz" firstAttribute="leading" secondItem="gWP-2y-wJN" secondAttribute="leading" id="tKT-ps-ler"/>
                             <constraint firstItem="pGG-oR-JF8" firstAttribute="leading" secondItem="pXp-kL-otu" secondAttribute="leading" constant="16" id="vaA-7v-uTT"/>
@@ -529,9 +541,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="JlN-ZK-efB"/>
                     <connections>
-                        <outlet property="bottomSpacingConstraint" destination="gdg-Fc-899" id="5Ei-wS-nUl"/>
-                        <outlet property="bottomSpacingConstraintBtn" destination="Ufy-oU-SZ4" id="i83-R5-77I"/>
-                        <outlet property="bottomSpacingConstraintImg" destination="l1J-EB-juR" id="hrL-gg-OZr"/>
+                        <outlet property="bottomViewB2" destination="ZQu-SI-cLm" id="7Lq-bN-NgX"/>
                         <outlet property="dateLbl" destination="nqK-XV-v9Q" id="Qh9-fl-8Yn"/>
                         <outlet property="idImgView" destination="gvH-p9-Nv5" id="h2s-VV-g0Y"/>
                         <outlet property="postImgView" destination="MSA-LC-CFN" id="hIL-aw-aN8"/>

@@ -105,16 +105,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     //        return 100
     //    }
     
-    // セル表示
-    //    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
-    //        //cell deque
-    //        let cell: CTViewCell = self.tableView.dequeueReusableCellWithIdentifier("customCell") as! CTViewCell
-    //        //cell中身セット（引数　セル、indexPath）
-    //        cell.configureCell(threadList[indexPath.row] as CTModel, atIndexPath : indexPath)
-    //
-    //        return cell
-    //    }
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if hasImageAtIndexPath(indexPath) {
             return imageCellAtIndexPath(indexPath)
@@ -145,6 +135,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     func setPostImg(cell:ImageCell, indexPath:NSIndexPath) {
         let thread = threadList[indexPath.row] as PostModel
         ImageLoader.sharedLoader.imageForUrl(GlobalFunction().getActualImg(thread.postImg) as String, completionHandler:{(image: UIImage?, url: String) in
+//            cell.postImageView.contentMode = .ScaleAspectFit
+//            cell.postImageView.clipsToBounds = true
             cell.postImageView.image = image!
         })
     }
@@ -244,8 +236,10 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             if(self.validateBeforePost()){
                 if uploadImgView.image != nil {
                     self.sendPostImage()
+                }else{
+                    self.sendPostMessage("")
                 }
-                self.sendPostMessage()
+                
             }
         }
     }
@@ -258,8 +252,9 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         ]
         
         // add addtionial parameters
-        parameters["userId"] = "27"
-        parameters["body"] = "This is the body text."
+        parameters["_xn"] = "\(self.getXN())"
+        parameters["_iim"] = "1"
+        parameters["_from_ios"] = "1"
         
         // example image data
         //        let image = UIImage(named: "177143.jpg")
@@ -268,17 +263,54 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         
         // CREATE AND SEND REQUEST ----------
         
-        let urlRequest = urlRequestWithComponents(GlobalVariables().serverUrl+"/upload_alamofire.php", parameters: parameters, imageData: imageData)
+        let urlRequest = urlRequestWithComponents(GlobalVariables().serverUrl+"/upload.php", parameters: parameters, imageData: imageData)
         
         Alamofire.upload(urlRequest.0, urlRequest.1)
+//        Alamofire.upload(.GET, GlobalVariables().serverUrl+"/upload_alamofire.php?_xn=\(self.getXN())&_iim=1", imageData)
             .progress { (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
                 println("\(totalBytesWritten) / \(totalBytesExpectedToWrite)")
             }
-            .responseJSON { (request, response, JSON, error) in
+            .responseJSON { (request, response, jsonResponse, error) in
                 println("REQUEST \(request)")
-                println("RESPONSE \(response)")
-                println("JSON \(JSON)")
+//                println("RESPONSE \(response)")
+                println("JSON \(jsonResponse)")
                 println("ERROR \(error)")
+                
+                if error == nil {
+                    let responseDict = JSON(jsonResponse as! NSDictionary)
+                    
+                    let statTemp = responseDict["stat"]
+                    let stat : NSString = "\(statTemp)"
+                    if stat.isEqualToString("0") {
+                        let msg = responseDict["msg"]
+                        GlobalFunction().showAlert("Upload Image Failed!", message: "\(msg)")
+                    }else{
+                        let id = responseDict["id"]
+                        self.sendPostMessage("\(id)")
+                    }
+                    
+//                    let stat: NSString = responseDict["stat"].string!
+//                    let id: NSString = responseDict["id"].string!
+//                    
+//                    println("\(stat)")
+//                    println("\(id)")
+                    
+//                    let responseJSON = JSON(jsonResponse as! NSDictionary)
+//                    
+//                    if let stat : NSString = responseDict["stat"]!.string {
+//                        if stat.isEqualToString("0") {
+//                            let msg : NSString = responseDict["msg"]!.string!
+//                            GlobalFunction().showAlert("Upload Image Failed!", message: "\(msg)")
+//                        }else{
+//                            let imId : String = responseDict["id"]!.string!
+//                            self.sendPostMessage(imId)
+//                        }
+//                    }else{
+//                        GlobalFunction().showAlert("Upload Image Failed!", message: "Error unknown")
+//                    }
+                }else{
+                    GlobalFunction().showAlert("Upload Image Failed!", message: error!.description)
+                }
         }
     }
     
@@ -533,13 +565,13 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         }
     }
     
-    func sendPostMessage(){
+    func sendPostMessage(imId : String){
         var post:NSString = sendTextview.text
         let globalVariables = GlobalVariables()
         
         let uname:NSString = self.getXN()
         
-        var postData:NSString = "x=\(uname)&y=3&z=\(post)&i=&u=&im=&s=3"
+        var postData:NSString = "x=\(uname)&y=3&z=\(post)&i=&u=&im=\(imId)&s=3"
         
         if let responseData:NSData? = askServer("Post", url: globalVariables.serverUrl+"/stock_tab6_post_status.php", postData: postData){
             
