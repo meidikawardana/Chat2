@@ -35,7 +35,6 @@
 		B9ED83851AE09C2500B60227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9ED83841AE09C2500B60227 /* Images.xcassets */; };
 		B9ED83881AE09C2500B60227 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9ED83861AE09C2500B60227 /* LaunchScreen.xib */; };
 		B9ED83941AE09C2500B60227 /* ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED83931AE09C2500B60227 /* ChatTests.swift */; };
-		B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */; };
 		B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */; };
 		B9FF02B21AE8E5C600C8B471 /* bullsmile.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B11AE8E5C600C8B471 /* bullsmile.png */; };
 		B9FF02B81AE9F57900C8B471 /* cameraicon.gif in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B71AE9F57900C8B471 /* cameraicon.gif */; };
@@ -144,7 +143,6 @@
 		B9ED838D1AE09C2500B60227 /* ChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9ED83921AE09C2500B60227 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B9ED83931AE09C2500B60227 /* ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTests.swift; sourceTree = "<group>"; };
-		B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTViewCell.swift; sourceTree = "<group>"; };
 		B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		B9FF02B11AE8E5C600C8B471 /* bullsmile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bullsmile.png; sourceTree = "<group>"; };
 		B9FF02B71AE9F57900C8B471 /* cameraicon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cameraicon.gif; sourceTree = "<group>"; };
@@ -228,7 +226,6 @@
 				B9ED837B1AE09C2400B60227 /* Supporting Files */,
 				B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */,
 				B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */,
-				B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */,
 				B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */,
 				B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */,
 				B9452B501AFC739700A2405F /* GlobalFunction.swift */,
@@ -438,7 +435,6 @@
 				B9051C851AE6B06C000FF5BE /* SocketTypes.swift in Sources */,
 				B9452B4C1AFC523300A2405F /* ImageCell.swift in Sources */,
 				B9051C7C1AE6B06C000FF5BE /* SocketAckMap.swift in Sources */,
-				B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */,
 				B9E30F6D1AE56F39008FF89D /* SignupVC.swift in Sources */,
 				B9051C811AE6B06C000FF5BE /* SocketFixUTF8.swift in Sources */,
 				B9051C861AE6B06C000FF5BE /* SwiftRegex.swift in Sources */,
