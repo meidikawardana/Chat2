@@ -19,6 +19,11 @@
 		B9051C851AE6B06C000FF5BE /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9051C791AE6B06C000FF5BE /* SocketTypes.swift */; };
 		B9051C861AE6B06C000FF5BE /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9051C7A1AE6B06C000FF5BE /* SwiftRegex.swift */; };
 		B9051C871AE6B06C000FF5BE /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9051C7B1AE6B06C000FF5BE /* WebSocket.swift */; };
+		B9452B4B1AFC523300A2405F /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B491AFC523300A2405F /* BasicCell.swift */; };
+		B9452B4C1AFC523300A2405F /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B4A1AFC523300A2405F /* ImageCell.swift */; };
+		B9452B511AFC739700A2405F /* GlobalFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B501AFC739700A2405F /* GlobalFunction.swift */; };
+		B9452B531AFC84F600A2405F /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B521AFC84F600A2405F /* PostModel.swift */; };
+		B9452B551AFC860300A2405F /* ReplyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B541AFC860300A2405F /* ReplyModel.swift */; };
 		B94DBD791AE48FBD00527C63 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */; };
 		B9E30F671AE4D57C008FF89D /* HomeCustomSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */; };
 		B9E30F691AE4E3DE008FF89D /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */; };
@@ -31,7 +36,6 @@
 		B9ED83881AE09C2500B60227 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9ED83861AE09C2500B60227 /* LaunchScreen.xib */; };
 		B9ED83941AE09C2500B60227 /* ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ED83931AE09C2500B60227 /* ChatTests.swift */; };
 		B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */; };
-		B9FF02951AE8D8CD00C8B471 /* CTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02941AE8D8CD00C8B471 /* CTModel.swift */; };
 		B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */; };
 		B9FF02B21AE8E5C600C8B471 /* bullsmile.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B11AE8E5C600C8B471 /* bullsmile.png */; };
 		B9FF02B81AE9F57900C8B471 /* cameraicon.gif in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B71AE9F57900C8B471 /* cameraicon.gif */; };
@@ -120,6 +124,11 @@
 		B9051C791AE6B06C000FF5BE /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		B9051C7A1AE6B06C000FF5BE /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		B9051C7B1AE6B06C000FF5BE /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		B9452B491AFC523300A2405F /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
+		B9452B4A1AFC523300A2405F /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		B9452B501AFC739700A2405F /* GlobalFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalFunction.swift; sourceTree = "<group>"; };
+		B9452B521AFC84F600A2405F /* PostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		B9452B541AFC860300A2405F /* ReplyModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyModel.swift; sourceTree = "<group>"; };
 		B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCustomSegue.swift; sourceTree = "<group>"; };
 		B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
@@ -136,7 +145,6 @@
 		B9ED83921AE09C2500B60227 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B9ED83931AE09C2500B60227 /* ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTests.swift; sourceTree = "<group>"; };
 		B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTViewCell.swift; sourceTree = "<group>"; };
-		B9FF02941AE8D8CD00C8B471 /* CTModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTModel.swift; sourceTree = "<group>"; };
 		B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		B9FF02B11AE8E5C600C8B471 /* bullsmile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bullsmile.png; sourceTree = "<group>"; };
 		B9FF02B71AE9F57900C8B471 /* cameraicon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cameraicon.gif; sourceTree = "<group>"; };
@@ -205,8 +213,9 @@
 		B9ED837A1AE09C2400B60227 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				B9452B491AFC523300A2405F /* BasicCell.swift */,
+				B9452B4A1AFC523300A2405F /* ImageCell.swift */,
 				B9FF02961AE8DB8500C8B471 /* Images */,
-				B9FF02941AE8D8CD00C8B471 /* CTModel.swift */,
 				B9E30F6A1AE56DF8008FF89D /* LoginVC.swift */,
 				B9E30F6E1AE56F77008FF89D /* Main.storyboard */,
 				B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */,
@@ -222,6 +231,9 @@
 				B9FF02921AE8D61C00C8B471 /* CTViewCell.swift */,
 				B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */,
 				B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */,
+				B9452B501AFC739700A2405F /* GlobalFunction.swift */,
+				B9452B521AFC84F600A2405F /* PostModel.swift */,
+				B9452B541AFC860300A2405F /* ReplyModel.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -419,10 +431,12 @@
 				B9E30F6B1AE56DF8008FF89D /* LoginVC.swift in Sources */,
 				B9E30F691AE4E3DE008FF89D /* SwiftyJSON.swift in Sources */,
 				B9051C841AE6B06C000FF5BE /* SocketParser.swift in Sources */,
+				B9452B4B1AFC523300A2405F /* BasicCell.swift in Sources */,
 				B9051C7D1AE6B06C000FF5BE /* SocketAnyEvent.swift in Sources */,
 				B9051C7F1AE6B06C000FF5BE /* SocketEngineClient.swift in Sources */,
 				B9ED837E1AE09C2500B60227 /* AppDelegate.swift in Sources */,
 				B9051C851AE6B06C000FF5BE /* SocketTypes.swift in Sources */,
+				B9452B4C1AFC523300A2405F /* ImageCell.swift in Sources */,
 				B9051C7C1AE6B06C000FF5BE /* SocketAckMap.swift in Sources */,
 				B9FF02931AE8D61C00C8B471 /* CTViewCell.swift in Sources */,
 				B9E30F6D1AE56F39008FF89D /* SignupVC.swift in Sources */,
@@ -432,12 +446,14 @@
 				B9051C871AE6B06C000FF5BE /* WebSocket.swift in Sources */,
 				B9051C831AE6B06C000FF5BE /* SocketPacket.swift in Sources */,
 				B9FF03331AF9B9A700C8B471 /* SingleThreadVC.swift in Sources */,
+				B9452B531AFC84F600A2405F /* PostModel.swift in Sources */,
 				B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */,
+				B9452B511AFC739700A2405F /* GlobalFunction.swift in Sources */,
 				B9E30F671AE4D57C008FF89D /* HomeCustomSegue.swift in Sources */,
+				B9452B551AFC860300A2405F /* ReplyModel.swift in Sources */,
 				B9051C821AE6B06C000FF5BE /* SocketIOClient.swift in Sources */,
 				B9E30F711AE56FCC008FF89D /* HomeVC.swift in Sources */,
 				B94DBD791AE48FBD00527C63 /* GlobalVariables.swift in Sources */,
-				B9FF02951AE8D8CD00C8B471 /* CTModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
