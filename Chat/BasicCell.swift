@@ -12,6 +12,8 @@ class BasicCell: UITableViewCell {
     
     @IBOutlet var posterImageView: UIImageView!
     
+    @IBOutlet var posterLabel: UILabel!
+    
     @IBOutlet var postLabel: UILabel!
     
     @IBOutlet var dateLabel: UILabel!

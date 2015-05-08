@@ -381,9 +381,9 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         var rowText : NSString
         
         if(displayMode == 0){
-            rowText =  "\(poster) > \" \(post)\""
+            rowText =  "@\(poster) > \" \(post)\""
         }else{
-            rowText =  "\(replier) replied \(poster) > \" \(reply)\""
+            rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
         }
         
         var postImg : NSString = ""
@@ -701,11 +701,11 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         
         var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=0&use_collection_clause=1"
         
-        NSLog("PostData: %@",post);
+//        NSLog("PostData: %@",post);
         
         let urlString : String = globalVariables.serverUrlDesktop+"/_wall_json_android_2.php"
         
-        NSLog("URL: %@",urlString);
+//        NSLog("URL: %@",urlString);
         
         var url:NSURL = NSURL(string:urlString)!
         
@@ -729,7 +729,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         if ( urlData != nil ) {
             let res = response as! NSHTTPURLResponse!;
             
-            NSLog("Response code: %ld", res.statusCode);
+//            NSLog("Response code: %ld", res.statusCode);
             
             if (res.statusCode >= 200 && res.statusCode < 300)
             {

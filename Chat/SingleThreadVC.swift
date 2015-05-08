@@ -10,7 +10,7 @@ import UIKit
 
 class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet weak var bottomSpacingConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomSpacingConstraint: NSLayoutConstraint!
     
     @IBOutlet var idImgView: UIImageView!
     
@@ -19,10 +19,10 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     @IBOutlet var postLbl: UILabel!
     @IBOutlet var postImgView: UIImageView!
     
-    @IBOutlet weak var bottomSpacingConstraintImg: NSLayoutConstraint!
+    @IBOutlet var bottomSpacingConstraintImg: NSLayoutConstraint!
     
     
-    @IBOutlet weak var bottomSpacingConstraintBtn: NSLayoutConstraint!
+    @IBOutlet var bottomSpacingConstraintBtn: NSLayoutConstraint!
     
     @IBAction func backAction(sender: UIBarButtonItem) {
         self.dismissViewControllerAnimated(false, completion: nil)
@@ -67,7 +67,7 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
             })
         }
         
-        self.posterLbl.text = segueArgument.poster as String
+        self.posterLbl.text = "@"+(segueArgument.poster as String)
         self.dateLbl.text = segueArgument.postDate as String
         self.postLbl.text = segueArgument.postOri as String
         
@@ -130,10 +130,16 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     
     func basicCellAtIndexPath(indexPath:NSIndexPath) -> BasicCell {
         let cell = stTableView.dequeueReusableCellWithIdentifier(basicCellIdentifier) as! BasicCell
+        setReplier(cell, indexPath: indexPath)
         setReplyContent(cell, indexPath: indexPath)
         setReplyDate(cell, indexPath: indexPath)
         setIdImg(cell, indexPath: indexPath)
         return cell
+    }
+    
+    func setReplier(cell:BasicCell, indexPath:NSIndexPath) {
+        let thread = stThreadList[indexPath.row] as ReplyModel
+        cell.posterLabel.text = thread.replier as String
     }
     
     func setReplyContent(cell:BasicCell, indexPath:NSIndexPath) {
@@ -173,7 +179,12 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         let isShowing = notification.name == UIKeyboardWillShowNotification
         
+        println("------1\(isShowing)")
+        
         if let userInfo = notification.userInfo {
+            
+            println("------2")
+            
             let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue()
             let endFrameHeight = endFrame?.size.height ?? 0.0
             let duration:NSTimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
@@ -208,11 +219,11 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         var post:NSString = "id=\(segueArgument.postId)&s=2"
         
-        NSLog("PostData: %@",post);
+//        NSLog("PostData: %@",post);
         
         let urlString : String = globalVariables.serverUrl+"/stock_tab6_op_json.php"
         
-        NSLog("URL: %@",urlString);
+//        NSLog("URL: %@",urlString);
         
         var url:NSURL = NSURL(string:urlString)!
         
@@ -236,13 +247,13 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         if ( urlData != nil ) {
             let res = response as! NSHTTPURLResponse!;
             
-            NSLog("Response code: %ld", res.statusCode);
+//            NSLog("Response code: %ld", res.statusCode);
             
             if (res.statusCode >= 200 && res.statusCode < 300)
             {
                 var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
                 
-                NSLog("Response Replies ==> %@", responseData);
+//                NSLog("Response Replies ==> %@", responseData);
                 
                 var error: NSError?
                 
