@@ -29,6 +29,9 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     
     var imagePicker = UIImagePickerController()
     
+    let basicCellIdentifier = "BasicCell"
+    let imageCellIdentifier = "ImageCell"
+    
     @IBAction func uploadImgTapped(sender: AnyObject) {
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.SavedPhotosAlbum){
@@ -53,15 +56,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         btnRemoveImg.hidden = true
     }
     
-    //    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: NSDictionary){
-    //        self.dismissViewControllerAnimated(true, completion: { () -> Void in
-    //
-    //        })
-    //
-    //        uploadImgView.image = image
-    //
-    //    }
-    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject])
     {
         picker .dismissViewControllerAnimated(true, completion: nil)
@@ -78,7 +72,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
     let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
     
-    var threadList : [CTModel] = []
+    var threadList : [PostModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,13 +106,79 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     //    }
     
     // セル表示
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
-        //cell deque
-        let cell: CTViewCell = self.tableView.dequeueReusableCellWithIdentifier("customCell") as! CTViewCell
-        //cell中身セット（引数　セル、indexPath）
-        cell.configureCell(threadList[indexPath.row] as CTModel, atIndexPath : indexPath)
+    //    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
+    //        //cell deque
+    //        let cell: CTViewCell = self.tableView.dequeueReusableCellWithIdentifier("customCell") as! CTViewCell
+    //        //cell中身セット（引数　セル、indexPath）
+    //        cell.configureCell(threadList[indexPath.row] as CTModel, atIndexPath : indexPath)
+    //
+    //        return cell
+    //    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if hasImageAtIndexPath(indexPath) {
+            return imageCellAtIndexPath(indexPath)
+        } else {
+            return basicCellAtIndexPath(indexPath)
+        }
+    }
+    
+    func hasImageAtIndexPath(indexPath:NSIndexPath) -> Bool {
+        let thread = threadList[indexPath.row]
         
+        let postImg: NSString = thread.postImg
+        if postImg.isEqualToString("") {
+            return false
+        }
+        return true
+    }
+    
+    func imageCellAtIndexPath(indexPath:NSIndexPath) -> ImageCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(imageCellIdentifier) as! ImageCell
+        setPostContent(cell, indexPath: indexPath)
+        setPostDate(cell, indexPath: indexPath)
+        setIdImg(cell, indexPath: indexPath)
+        setPostImg(cell, indexPath: indexPath)
         return cell
+    }
+    
+    func setPostImg(cell:ImageCell, indexPath:NSIndexPath) {
+        let thread = threadList[indexPath.row] as PostModel
+        ImageLoader.sharedLoader.imageForUrl(GlobalFunction().getActualImg(thread.postImg) as String, completionHandler:{(image: UIImage?, url: String) in
+            cell.postImageView.image = image!
+        })
+    }
+    
+    func basicCellAtIndexPath(indexPath:NSIndexPath) -> BasicCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(basicCellIdentifier) as! BasicCell
+        setPostContent(cell, indexPath: indexPath)
+        setPostDate(cell, indexPath: indexPath)
+        setIdImg(cell, indexPath: indexPath)
+        return cell
+    }
+    
+    func setPostContent(cell:BasicCell, indexPath:NSIndexPath) {
+        let thread = threadList[indexPath.row] as PostModel
+        cell.postLabel.text = thread.postContent as String
+    }
+    
+    func setPostDate(cell:BasicCell, indexPath:NSIndexPath) {
+        let thread = threadList[indexPath.row] as PostModel
+        cell.dateLabel.text = thread.postDate as String
+    }
+    
+    func setIdImg(cell:BasicCell, indexPath:NSIndexPath) {
+        let thread = threadList[indexPath.row] as PostModel
+        cell.posterImageView.image = UIImage(named:  "bullsmile.png")
+        
+        if !thread.idImg.isEqualToString("") {
+            ImageLoader.sharedLoader.imageForUrl(GlobalFunction().getActualImg(thread.idImg) as String, completionHandler:{(image: UIImage?, url: String) in
+                
+                if !(image == nil) {
+                    cell.posterImageView.image = image!
+                }
+            })
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -144,16 +204,28 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         // Dispose of any resources that can be recreated.
     }
     
-    
-    /*
     // #pragma mark - Navigation
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue?, sender: AnyObject?) {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "toSingleThread" || segue.identifier == "toSingleThread2" ) {
+            
+            //            let selectedIndex = self.tableView.indexPathForCell(sender as! UITableViewCell)
+            
+            var indexPath = self.tableView.indexPathForSelectedRow() //get index of data for selected row
+            
+            let r:PostModel = self.threadList[indexPath!.row] as PostModel
+            
+//            println("1.---\(r.postContent)")
+//            println("2.---\(r.postDate)")
+//            println("3.---\(r.idImg)")
+//            println("4.---\(r.postImg)")
+            
+            var svc = segue.destinationViewController as! SingleThreadVC
+            
+            svc.segueArgument = r
+            
+        }
     }
-    */
     
     @IBAction func logoutTapped(sender : UIButton) {
         
@@ -327,7 +399,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             idImg = idImgTemp!
         }
         
-        if !self.shouldUseDrawable(idImg) {
+        if !GlobalFunction().shouldUseDrawable(idImg) {
             idImg = GlobalVariables().serverUrlDesktop + "/uploaded_images/profpic/" + (idImg as String)
         }
         
@@ -337,9 +409,14 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             actDateInt = actDateIntTemp
         }
         
+        var postId : Int = 0
+        if let postIdTemp : Int = contentJSON[6].int {
+            postId = postIdTemp
+        }
+        
         //        println("-----idmg:\(idImg)")
         
-        let threadNew : [CTModel] = [CTModel(titleName:rowText, categoryName:self.getTimeF(actDateInt),idImg:idImg,postImg: postImg)]
+        let threadNew : [PostModel] = [PostModel(postContent:rowText, postDate:GlobalFunction().getTimeF(actDateInt),idImg:idImg,postImg: postImg, postId: postId, poster: poster, postOri: post )]
         
         if !isAppend {
             threadList = threadNew + threadList
@@ -397,7 +474,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             {
                 return urlData
             } else {
-                self.showAlert(requestName+" Failed!", message: "Connection Failed")
+                GlobalFunction().showAlert(requestName+" Failed!", message: "Connection Failed")
             }
         } else {
             
@@ -407,7 +484,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                 msg = (error.localizedDescription)
             }
             
-            self.showAlert(requestName+" Failed!", message: msg)
+            GlobalFunction().showAlert(requestName+" Failed!", message: msg)
         }
         
         return nil
@@ -449,7 +526,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     func validateBeforePost() -> Bool {
         var post:NSString = sendTextview.text
         if ( post.isEqualToString("")) {
-            self.showAlert("Post Failed!", message: "Please write something")
+            GlobalFunction().showAlert("Post Failed!", message: "Please write something")
             return false
         } else {
             return true
@@ -658,7 +735,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             {
                 var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
                 
-                //                NSLog("Response Feeds ==> %@", responseData);
+//                NSLog("Response Feeds ==> %@", responseData);
                 
                 var error: NSError?
                 
@@ -671,94 +748,14 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                 }
                 
             } else {
-                self.showAlert("Failed to get chat history", message: "Connection Failed")
+                GlobalFunction().showAlert("Failed to get chat history", message: "Connection Failed")
             }
         } else {
             if let error = reponseError {
-                self.showAlert("Failed to get chat history", message: error.localizedDescription)
+                GlobalFunction().showAlert("Failed to get chat history", message: error.localizedDescription)
             }else{
-                self.showAlert("Failed to get chat history", message: "Connection Failure")
+                GlobalFunction().showAlert("Failed to get chat history", message: "Connection Failure")
             }
         }
-    }
-    
-    func showAlert(title:String,message:String){
-        var alertView:UIAlertView = UIAlertView()
-        alertView.title = title
-        alertView.message = message
-        alertView.delegate = self
-        alertView.addButtonWithTitle("OK")
-        alertView.show()
-    }
-    
-    func shouldUseDrawable(idImg: NSString) -> Bool {
-        var useDrawable = idImg.isEqualToString("bullsmile.png")
-        
-        if idImg.isEqualToString("") {
-            useDrawable = true
-        }
-        
-        if idImg.isEqualToString("null") {
-            useDrawable = true
-        }
-        
-        if idImg.isEqualToString("bullsmile_profpic.png") {
-            useDrawable = true
-        }
-        
-        return useDrawable
-    }
-    
-    func getTimeF(utParam: Int) -> String {
-        let ut : NSTimeInterval = (String(utParam) as NSString).doubleValue
-        let start = NSDate(timeIntervalSince1970: ut)
-        let enddt = NSDate()
-        let calendar = NSCalendar.currentCalendar()
-        let datecomponenets = calendar.components(NSCalendarUnit.CalendarUnitSecond, fromDate: start, toDate: enddt, options: nil)
-        let diff = datecomponenets.second
-        
-        if (diff <= 1) {
-            return "a second ago";
-        } else if (diff < 60) {
-            return String(diff) + " seconds ago"
-        } else if (diff >= 60 && diff < 120) {
-            return "1 min ago"
-        } else if (diff >= 120 && diff < 3600) {
-            return String(diff / 60) + " mins ago"
-        } else if (diff >= 3600 && diff < 7200) {
-            return "an hour ago"
-        } else if (diff >= 7200 && diff < 86400) {
-            return String(diff / 3600) + " hours ago"
-        } else if (diff >= 86400 && diff < 172800) {
-            return "Yesterday" + formatTime(String(utParam), version: 2)
-        } else if (diff >= 172800) {
-            return formatTime(String(utParam), version: 1)
-        }
-        return String(utParam)
-    }
-    
-    func formatTime(unixTimestamp : NSString, version : Int) -> String {
-        //    try {
-        let dv : NSTimeInterval = (unixTimestamp).doubleValue * 1000;// its need to be in milisecond
-        let dt = NSDate(timeIntervalSince1970: dv)
-        
-        var dateFormater : NSDateFormatter = NSDateFormatter()
-        dateFormater.dateFormat = (version == 1) ? "MMM dd yyyy hh:mma" : "hh:mma"
-        
-//        String format = (version == 1) ? "MMM dd yyyy hh:mma" : "hh:mma";
-//        
-//        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-//        
-        if (version == 1) {
-            return dateFormater.stringFromDate(dt)
-        } else {
-            return " at " + dateFormater.stringFromDate(dt)
-        }
-        
-        
-        //    } catch (NumberFormatException e) {
-        //    Log.e("thread_ex",e.toString()+"#"+unixTimestamp+"#"+String.valueOf(unixTimestamp.equals("-1")));
-        //    return "some moments ago";
-        //    }
     }
 }

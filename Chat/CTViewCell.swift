@@ -32,10 +32,10 @@ class CTViewCell: UITableViewCell {
     }
     
     // セル内セット
-    func configureCell(texts:CTModel, atIndexPath indexPath: NSIndexPath){
+    func configureCell(texts:PostModel, atIndexPath indexPath: NSIndexPath){
         
-        contentLabel.text = texts.titleName as String
-        dateLabel.text = texts.categoryName as String
+        contentLabel.text = texts.postContent as String
+        dateLabel.text = texts.postDate as String
         
         self.idImageView.image = UIImage(named:  "bullsmile.png")
         
@@ -52,13 +52,18 @@ class CTViewCell: UITableViewCell {
         if postImg.isEqualToString("") {
             self.postImageView.image = nil
             
-            self.postImageView.removeConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 119))
+            self.postImageView.removeConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 119))
             
             self.postImageView.addConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
         }else{
-            self.postImageView.addConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1, constant: 119))
             
-            println("\( self.getActualImg(postImg) )")
+            self.postImageView.removeConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 119))
+            
+            self.postImageView.removeConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
+            
+            self.postImageView.addConstraint(NSLayoutConstraint(item: self.postImageView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 119))
+            
+//            println("\( self.getActualImg(postImg) )")
             
             ImageLoader.sharedLoader.imageForUrl(self.getActualImg(postImg) as String, completionHandler:{(image: UIImage?, url: String) in
                 self.postImageView.image = image!
