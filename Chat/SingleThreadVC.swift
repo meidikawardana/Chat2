@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 
 class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegate
-,UINavigationControllerDelegate,UIImagePickerControllerDelegate{
+    ,UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     
     @IBOutlet var actionReplyContainerB: NSLayoutConstraint!
     
@@ -56,12 +56,18 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     var imagePicker = UIImagePickerController()
     
     var shouldFocusOnReplyTxt : Bool = false
+
     //actionReply & bottomView end
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.addHandlers()
+        
+        actionReplyContainer.hidden = true
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidHideNotification, object: nil);
         
         actionReplyContainer.hidden = true
         
@@ -369,8 +375,6 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     
     @IBAction func replyCameraBtnTapped(sender: AnyObject) {
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.SavedPhotosAlbum){
-            
-            
             if replyTxt.isFirstResponder() {
                 self.shouldFocusOnReplyTxt = true
             }
@@ -399,9 +403,6 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         if shouldFocusOnReplyTxt {
             replyTxt.becomeFirstResponder()
         }
-        
-        //tambahkan: jika sebelum tombol kamera diklik, input text reply terfokus, setelah gambar
-        //dipilih seharusnya input text reply diberi fokus lagi
     }
     
     

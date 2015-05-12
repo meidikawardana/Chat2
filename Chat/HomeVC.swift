@@ -74,7 +74,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     
     
     //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
-//    let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
+    //    let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
     
     var threadList : [PostModel] = []
     
@@ -139,8 +139,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     func setPostImg(cell:ImageCell, indexPath:NSIndexPath) {
         let thread = threadList[indexPath.row] as PostModel
         ImageLoader.sharedLoader.imageForUrl(GlobalFunction().getActualImg(thread.postImg) as String, completionHandler:{(image: UIImage?, url: String) in
-//            cell.postImageView.contentMode = .ScaleAspectFit
-//            cell.postImageView.clipsToBounds = true
+            //            cell.postImageView.contentMode = .ScaleAspectFit
+            //            cell.postImageView.clipsToBounds = true
             cell.postImageView.image = image!
         })
     }
@@ -211,10 +211,10 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             
             let r:PostModel = self.threadList[indexPath!.row] as PostModel
             
-//            println("1.---\(r.postContent)")
-//            println("2.---\(r.postDate)")
-//            println("3.---\(r.idImg)")
-//            println("4.---\(r.postImg)")
+            //            println("1.---\(r.postContent)")
+            //            println("2.---\(r.postDate)")
+            //            println("3.---\(r.idImg)")
+            //            println("4.---\(r.postImg)")
             
             var svc = segue.destinationViewController as! SingleThreadVC
             
@@ -274,7 +274,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             }
             .responseJSON { (request, response, jsonResponse, error) in
                 println("REQUEST \(request)")
-//                println("RESPONSE \(response)")
+                //                println("RESPONSE \(response)")
                 println("JSON \(jsonResponse)")
                 println("ERROR \(error)")
                 
@@ -326,7 +326,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
                 self!.generateFeedsFinalMediator(GlobalFunction().generateFeedsFromArr(dataReply?[0] as! NSArray),isAppend: false)
             }
         }
-    }    
+    }
     
     func generateFeedsFinalMediator(contentJSON: JSON, isAppend : Bool){
         
@@ -647,11 +647,11 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         
         var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=\(minDate)&use_collection_clause=1"
         
-//        NSLog("PostData: %@",post);
+        //        NSLog("PostData: %@",post);
         
         let urlString : String = globalVariables.serverUrlDesktop+"/_wall_json_android_2.php"
         
-//        NSLog("URL: %@",urlString);
+        //        NSLog("URL: %@",urlString);
         
         var url:NSURL = NSURL(string:urlString)!
         
@@ -675,13 +675,13 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         if ( urlData != nil ) {
             let res = response as! NSHTTPURLResponse!;
             
-//            NSLog("Response code: %ld", res.statusCode);
+            //            NSLog("Response code: %ld", res.statusCode);
             
             if (res.statusCode >= 200 && res.statusCode < 300)
             {
                 var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
                 
-//                NSLog("Response Feeds ==> %@", responseData);
+                //                NSLog("Response Feeds ==> %@", responseData);
                 
                 var error: NSError?
                 
@@ -710,7 +710,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
         if (maximumOffset - currentOffset) <= 40 {
-//            println("scrolled \(threadList.count)")
+            //            println("scrolled \(threadList.count)")
             loadSegment(pageSize)
         }
     }
@@ -729,17 +729,17 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             
             appendFeeds(threadList[threadList.count-1].postDateReal)
             
-//            MyDataProvider.getInstance().requestData(offset, size: size,
-//                listener: {(items:[ViewController.MyItem]) -> () in
-//                    
-//                    for item:MyItem in items {
-//                        self.items.append(item)
-//                    }
-//                    
-//                    self.tableView.reloadData()
-//                    
-//                    self.setLoadingState(false)
-//            })
+            //            MyDataProvider.getInstance().requestData(offset, size: size,
+            //                listener: {(items:[ViewController.MyItem]) -> () in
+            //
+            //                    for item:MyItem in items {
+            //                        self.items.append(item)
+            //                    }
+            //                    
+            //                    self.tableView.reloadData()
+            //                    
+            //                    self.setLoadingState(false)
+            //            })
         }
     }
 }
