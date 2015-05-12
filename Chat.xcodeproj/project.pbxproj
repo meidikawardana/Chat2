@@ -24,6 +24,9 @@
 		B9452B511AFC739700A2405F /* GlobalFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B501AFC739700A2405F /* GlobalFunction.swift */; };
 		B9452B531AFC84F600A2405F /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B521AFC84F600A2405F /* PostModel.swift */; };
 		B9452B551AFC860300A2405F /* ReplyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B541AFC860300A2405F /* ReplyModel.swift */; };
+		B9452B5E1AFE1EB800A2405F /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B5D1AFE1EB800A2405F /* SocketClient.swift */; };
+		B9452B631B00603500A2405F /* ActModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B621B00603500A2405F /* ActModel.swift */; };
+		B9452B651B0193DC00A2405F /* MyFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9452B641B0193DC00A2405F /* MyFooter.swift */; };
 		B94DBD791AE48FBD00527C63 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */; };
 		B9E30F671AE4D57C008FF89D /* HomeCustomSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */; };
 		B9E30F691AE4E3DE008FF89D /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */; };
@@ -38,7 +41,6 @@
 		B9FF02B01AE8E38300C8B471 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF02AF1AE8E38300C8B471 /* ImageLoader.swift */; };
 		B9FF02B21AE8E5C600C8B471 /* bullsmile.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B11AE8E5C600C8B471 /* bullsmile.png */; };
 		B9FF02B81AE9F57900C8B471 /* cameraicon.gif in Resources */ = {isa = PBXBuildFile; fileRef = B9FF02B71AE9F57900C8B471 /* cameraicon.gif */; };
-		B9FF031D1AEA029900C8B471 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9FF03141AEA024300C8B471 /* Alamofire.framework */; };
 		B9FF031E1AEA029900C8B471 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9FF03141AEA024300C8B471 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B9FF032F1AEA193A00C8B471 /* removeicon.png in Resources */ = {isa = PBXBuildFile; fileRef = B9FF032E1AEA193A00C8B471 /* removeicon.png */; };
 		B9FF03331AF9B9A700C8B471 /* SingleThreadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF03321AF9B9A700C8B471 /* SingleThreadVC.swift */; };
@@ -128,6 +130,9 @@
 		B9452B501AFC739700A2405F /* GlobalFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalFunction.swift; sourceTree = "<group>"; };
 		B9452B521AFC84F600A2405F /* PostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		B9452B541AFC860300A2405F /* ReplyModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyModel.swift; sourceTree = "<group>"; };
+		B9452B5D1AFE1EB800A2405F /* SocketClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
+		B9452B621B00603500A2405F /* ActModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActModel.swift; sourceTree = "<group>"; };
+		B9452B641B0193DC00A2405F /* MyFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFooter.swift; sourceTree = "<group>"; };
 		B94DBD781AE48FBD00527C63 /* GlobalVariables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		B9E30F661AE4D57C008FF89D /* HomeCustomSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCustomSegue.swift; sourceTree = "<group>"; };
 		B9E30F681AE4E3DE008FF89D /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
@@ -156,7 +161,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9FF031D1AEA029900C8B471 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +215,7 @@
 		B9ED837A1AE09C2400B60227 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				B9452B641B0193DC00A2405F /* MyFooter.swift */,
 				B9452B491AFC523300A2405F /* BasicCell.swift */,
 				B9452B4A1AFC523300A2405F /* ImageCell.swift */,
 				B9FF02961AE8DB8500C8B471 /* Images */,
@@ -231,6 +236,8 @@
 				B9452B501AFC739700A2405F /* GlobalFunction.swift */,
 				B9452B521AFC84F600A2405F /* PostModel.swift */,
 				B9452B541AFC860300A2405F /* ReplyModel.swift */,
+				B9452B5D1AFE1EB800A2405F /* SocketClient.swift */,
+				B9452B621B00603500A2405F /* ActModel.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -433,11 +440,14 @@
 				B9051C7F1AE6B06C000FF5BE /* SocketEngineClient.swift in Sources */,
 				B9ED837E1AE09C2500B60227 /* AppDelegate.swift in Sources */,
 				B9051C851AE6B06C000FF5BE /* SocketTypes.swift in Sources */,
+				B9452B651B0193DC00A2405F /* MyFooter.swift in Sources */,
 				B9452B4C1AFC523300A2405F /* ImageCell.swift in Sources */,
+				B9452B631B00603500A2405F /* ActModel.swift in Sources */,
 				B9051C7C1AE6B06C000FF5BE /* SocketAckMap.swift in Sources */,
 				B9E30F6D1AE56F39008FF89D /* SignupVC.swift in Sources */,
 				B9051C811AE6B06C000FF5BE /* SocketFixUTF8.swift in Sources */,
 				B9051C861AE6B06C000FF5BE /* SwiftRegex.swift in Sources */,
+				B9452B5E1AFE1EB800A2405F /* SocketClient.swift in Sources */,
 				B9051C7E1AE6B06C000FF5BE /* SocketEngine.swift in Sources */,
 				B9051C871AE6B06C000FF5BE /* WebSocket.swift in Sources */,
 				B9051C831AE6B06C000FF5BE /* SocketPacket.swift in Sources */,
