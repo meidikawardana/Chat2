@@ -17,10 +17,11 @@ class PostModel: NSObject {
     var postId:Int
     var poster:NSString
     var postOri:NSString
+    var postDateReal:Int
     
     // initialize
     init(postContent: NSString, postDate: NSString, idImg: NSString, postImg: NSString,
-        postId: Int, poster: NSString, postOri: NSString) {
+        postId: Int, poster: NSString, postOri: NSString, postDateReal:Int) {
             self.postContent = postContent
             self.postDate = postDate
             self.idImg = idImg
@@ -28,5 +29,6 @@ class PostModel: NSObject {
             self.postId = postId
             self.poster = poster
             self.postOri = postOri
+            self.postDateReal = postDateReal
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 class HomeVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
-UINavigationControllerDelegate,UIImagePickerControllerDelegate{
+UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     
     @IBOutlet var usernameLabel : UILabel!
     
@@ -23,7 +23,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     
     @IBOutlet var btnUploadImg: UIButton!
     
-    
     @IBOutlet var btnRemoveImg: UIButton!
     
     
@@ -31,6 +30,12 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     
     let basicCellIdentifier = "BasicCell"
     let imageCellIdentifier = "ImageCell"
+    
+    let pageSize = 35
+    
+    @IBOutlet var tableViewFooter: MyFooter!
+    
+    var loading = false
     
     @IBAction func uploadImgTapped(sender: AnyObject) {
         
@@ -43,7 +48,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             
             self.presentViewController(imagePicker, animated: true, completion: nil)
         }
-        
     }
     
     @IBAction func btnRemoveImgTapped(sender: AnyObject) {
@@ -70,7 +74,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     
     
     //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
-    let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
+//    let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
     
     var threadList : [PostModel] = []
     
@@ -80,8 +84,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         btnRemoveImg.hidden = true
         
         // Do any additional setup after loading the view.
+        socketClient.socket.connect()
         self.addHandlers()
-        self.socket.connect()
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -179,15 +183,15 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         if (!self.isLoggedIn()) {
             self.gotoLogin()
         } else {
-            let xn = self.getXN()
+            let xn = GlobalFunction().getXN()
             self.usernameLabel.text = xn
             let jsonLogin = ["username" : xn
                 ,"ismobile": 0
             ]
             
-            self.socket.emit("add user", jsonLogin)
+            socketClient.socket.emit("add user", jsonLogin)
             
-            self.appendFeeds()
+            self.appendFeeds(0)
         }
     }
     
@@ -239,7 +243,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                 }else{
                     self.sendPostMessage("")
                 }
-                
             }
         }
     }
@@ -252,7 +255,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         ]
         
         // add addtionial parameters
-        parameters["_xn"] = "\(self.getXN())"
+        parameters["_xn"] = "\(GlobalFunction().getXN())"
         parameters["_iim"] = "1"
         parameters["_from_ios"] = "1"
         
@@ -263,10 +266,9 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         
         // CREATE AND SEND REQUEST ----------
         
-        let urlRequest = urlRequestWithComponents(GlobalVariables().serverUrl+"/upload.php", parameters: parameters, imageData: imageData)
+        let urlRequest = GlobalFunction().urlRequestWithComponents(GlobalVariables().serverUrl+"/upload.php", parameters: parameters, imageData: imageData)
         
         Alamofire.upload(urlRequest.0, urlRequest.1)
-//        Alamofire.upload(.GET, GlobalVariables().serverUrl+"/upload_alamofire.php?_xn=\(self.getXN())&_iim=1", imageData)
             .progress { (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
                 println("\(totalBytesWritten) / \(totalBytesExpectedToWrite)")
             }
@@ -288,26 +290,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                         let id = responseDict["id"]
                         self.sendPostMessage("\(id)")
                     }
-                    
-//                    let stat: NSString = responseDict["stat"].string!
-//                    let id: NSString = responseDict["id"].string!
-//                    
-//                    println("\(stat)")
-//                    println("\(id)")
-                    
-//                    let responseJSON = JSON(jsonResponse as! NSDictionary)
-//                    
-//                    if let stat : NSString = responseDict["stat"]!.string {
-//                        if stat.isEqualToString("0") {
-//                            let msg : NSString = responseDict["msg"]!.string!
-//                            GlobalFunction().showAlert("Upload Image Failed!", message: "\(msg)")
-//                        }else{
-//                            let imId : String = responseDict["id"]!.string!
-//                            self.sendPostMessage(imId)
-//                        }
-//                    }else{
-//                        GlobalFunction().showAlert("Upload Image Failed!", message: "Error unknown")
-//                    }
                 }else{
                     GlobalFunction().showAlert("Upload Image Failed!", message: error!.description)
                 }
@@ -315,77 +297,57 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
     }
     
     func addHandlers() {
-        self.socket.onAny {println("Got event: \($0.event), with items: \($0.items)")}
-        self.socket.on("message"){[weak self] data, ack in
+        socketClient.socket.onAny {println("Got event: \($0.event), with items: \($0.items)")}
+        socketClient.socket.on("message"){[weak self] data, ack in
             println("got message! \(data?[0])")
-            
-            //            self?.appendText("\(data![0])")
-            
         }
-        self.socket.on("message post"){[weak self] dataPost, ack in
+        socketClient.socket.on("message post"){[weak self] dataPost, ack in
             var handled : Bool = false
             if let d = dataPost?[0] as? NSString {
-                self?.generateFeeds(d, isPost: true)
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeeds(d, isPost: true),isAppend: false)
+                
                 handled = true
             }
             
             if(!handled){
-                self?.generateFeedsFromDict(dataPost?[0] as! NSDictionary)
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeedsFromDict(dataPost?[0] as! NSDictionary),isAppend: false)
             }
         }
         
-        self.socket.on("message reply"){[weak self] dataReply, ack in
+        socketClient.socket.on("message reply"){[weak self] dataReply, ack in
             var handled : Bool = false
             if let d = dataReply?[0] as? NSString {
-                self?.generateFeeds(d, isPost: false)
+                
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeeds(d, isPost: false),isAppend: false)
                 handled = true
             }
             
             if(!handled){
-                self?.generateFeedsFromArr(dataReply?[0] as! NSArray)
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeedsFromArr(dataReply?[0] as! NSArray),isAppend: false)
             }
+        }
+    }    
+    
+    func generateFeedsFinalMediator(contentJSON: JSON, isAppend : Bool){
+        
+        let threadNew : [PostModel] =  generateFeedsFinal(contentJSON, isAppend: isAppend)
+        
+        if !isAppend {
+            threadList = threadNew + threadList
+        }else{
+            threadList = threadList + threadNew
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
+        
+        if loading {
+            self.setLoadingState(false)
         }
     }
     
-    func generateFeedsFromDict(jsonData : NSDictionary){
-        let json = JSON(jsonData)
-        
-        let contentJSON = json["content"][0]
-        self.generateFeedsFinal(contentJSON,isAppend: false)
-    }
-    
-    func generateFeedsFromArr(jsonData : NSArray){
-        let json = JSON(jsonData)
-        
-        let contentJSON = json[0]
-        self.generateFeedsFinal(contentJSON,isAppend: false)
-    }
-    
-    func generateFeeds(jsonData : NSString, isPost: Bool){
-        
-        var error: NSError?
-        
-        var dataFromNetwork:NSData! = jsonData.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-        
-        let jsonDict : NSDictionary? = NSJSONSerialization.JSONObjectWithData(dataFromNetwork, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary
-        
-        
-        let json = ( isPost ? JSON(jsonDict!) : JSON(data: dataFromNetwork))
-        
-        
-        //        println("1------------")
-        //        println(json)
-        
-        
-        let contentJSON = ( isPost ? json["content"][0] : json[0] )
-        
-        //        println("2------------")
-        //        println(contentJSON)
-        
-        self.generateFeedsFinal(contentJSON,isAppend: false)
-    }
-    
-    func generateFeedsFinal(contentJSON: JSON, isAppend : Bool){
+    func generateFeedsFinal(contentJSON: JSON, isAppend : Bool) -> [PostModel]{
         var replier : NSString = ""
         if let replierTemp : NSString? = contentJSON[0].string {
             replier = replierTemp!
@@ -418,11 +380,11 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
         }
         
-        var postImg : NSString = ""
+        var img : NSString = ""
         
         if(contentJSON[10].count > 0){
             if let postImgTemp : NSString? = contentJSON[10][0].string {
-                postImg = postImgTemp!
+                img = postImgTemp!
             }
         }
         
@@ -446,30 +408,15 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             postId = postIdTemp
         }
         
-        //        println("-----idmg:\(idImg)")
+        let threadNew : [PostModel] = [PostModel(postContent:rowText, postDate:GlobalFunction().getTimeF(actDateInt),idImg:idImg,postImg: img, postId: postId, poster: poster, postOri: post, postDateReal:actDateInt )]
         
-        let threadNew : [PostModel] = [PostModel(postContent:rowText, postDate:GlobalFunction().getTimeF(actDateInt),idImg:idImg,postImg: postImg, postId: postId, poster: poster, postOri: post )]
-        
-        if !isAppend {
-            threadList = threadNew + threadList
-        }else{
-            threadList = threadList + threadNew
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.tableView.reloadData()
-        })
+        return threadNew
     }
     
     func isLoggedIn() ->Bool{
         let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         let isLoggedIn:Int =  prefs.integerForKey("ISLOGGEDIN") as Int
         return isLoggedIn == 1
-    }
-    
-    func getXN() ->String{
-        let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-        return prefs.valueForKey("XN") as! NSString as String
     }
     
     func gotoLogin(){
@@ -522,41 +469,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         return nil
     }
     
-    func urlRequestWithComponents(urlString:String, parameters:Dictionary<String, String>, imageData:NSData) -> (URLRequestConvertible, NSData) {
-        
-        // create url request to send
-        var mutableURLRequest = NSMutableURLRequest(URL: NSURL(string: urlString)!)
-        mutableURLRequest.HTTPMethod = Alamofire.Method.POST.rawValue
-        let boundaryConstant = "myRandomBoundary12345";
-        let contentType = "multipart/form-data;boundary="+boundaryConstant
-        mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
-        
-        
-        
-        // create upload data to send
-        let uploadData = NSMutableData()
-        
-        // add image
-        uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        uploadData.appendData("Content-Disposition: form-data; name=\"file\"; filename=\"file.png\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        uploadData.appendData("Content-Type: image/png\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        uploadData.appendData(imageData)
-        
-        // add parameters
-        for (key, value) in parameters {
-            uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-            uploadData.appendData("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding)!)
-        }
-        uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
-        
-        
-        // return URLRequestConvertible and NSData
-        return (Alamofire.ParameterEncoding.URL.encode(mutableURLRequest, parameters: nil).0, uploadData)
-    }
-    
     func validateBeforePost() -> Bool {
-        var post:NSString = sendTextview.text
+        let post:NSString = sendTextview.text
         if ( post.isEqualToString("")) {
             GlobalFunction().showAlert("Post Failed!", message: "Please write something")
             return false
@@ -569,7 +483,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         var post:NSString = sendTextview.text
         let globalVariables = GlobalVariables()
         
-        let uname:NSString = self.getXN()
+        let uname:NSString = GlobalFunction().getXN()
         
         var postData:NSString = "x=\(uname)&y=3&z=\(post)&i=&u=&im=\(imId)&s=3"
         
@@ -581,9 +495,9 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
             
             println(responseStr)
             
-            let responseMsg: NSString = responseStr.substringFromIndex(advance(responseStr.startIndex,3))
+            let responseMsg: NSString = GlobalFunction().substring(responseStr,from: 3,to: 0)
             
-            let responseStat: NSString = responseStr.substringToIndex(advance(responseStr.startIndex, 1))
+            let responseStat: NSString = GlobalFunction().substring(responseStr,from: 0,to: 1)
             if(responseStat.isEqualToString("1")){
                 
                 var error: NSError?
@@ -713,7 +627,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                     ]
                 ]
                 
-                self.socket.emit("message post",jsonDict)
+                socketClient.socket.emit("message post",jsonDict)
                 
                 sendTextview.text = "";
                 sendTextview.resignFirstResponder()
@@ -727,11 +641,11 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
         }
     }
     
-    func appendFeeds(){
+    func appendFeeds(minDate:Int){
         let globalVariables = GlobalVariables()
         
         
-        var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=0&use_collection_clause=1"
+        var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=\(minDate)&use_collection_clause=1"
         
 //        NSLog("PostData: %@",post);
         
@@ -776,18 +690,56 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate{
                 for jsonPiece : AnyObject in jsonArr {
                     let json = JSON(jsonPiece as! NSArray)
                     
-                    self.generateFeedsFinal(json,isAppend: true)
+                    self.generateFeedsFinalMediator(json,isAppend: true)
                 }
                 
             } else {
-                GlobalFunction().showAlert("Failed to get chat history", message: "Connection Failed")
+                GlobalFunction().showAlert("Failed to get recent chats", message: "Connection Failed")
             }
         } else {
             if let error = reponseError {
-                GlobalFunction().showAlert("Failed to get chat history", message: error.localizedDescription)
+                GlobalFunction().showAlert("Failed to get recent chats", message: error.localizedDescription)
             }else{
-                GlobalFunction().showAlert("Failed to get chat history", message: "Connection Failure")
+                GlobalFunction().showAlert("Failed to get recent chats", message: "Connection Failure")
             }
+        }
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        
+        if (maximumOffset - currentOffset) <= 40 {
+//            println("scrolled \(threadList.count)")
+            loadSegment(pageSize)
+        }
+    }
+    
+    func setLoadingState(loading:Bool) {
+        self.loading = loading
+        self.tableViewFooter.hidden = !loading
+    }
+    
+    func loadSegment(size:Int) {
+        
+        if (!self.loading) {
+            self.setLoadingState(true)
+            
+            println("c: \(threadList[threadList.count-1].postDateReal)")
+            
+            appendFeeds(threadList[threadList.count-1].postDateReal)
+            
+//            MyDataProvider.getInstance().requestData(offset, size: size,
+//                listener: {(items:[ViewController.MyItem]) -> () in
+//                    
+//                    for item:MyItem in items {
+//                        self.items.append(item)
+//                    }
+//                    
+//                    self.tableView.reloadData()
+//                    
+//                    self.setLoadingState(false)
+//            })
         }
     }
 }

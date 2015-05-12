@@ -7,18 +7,16 @@
 //
 
 import UIKit
+import Alamofire
 
-class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegate {
+class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegate
+,UINavigationControllerDelegate,UIImagePickerControllerDelegate{
+    
+    @IBOutlet var actionReplyContainerB: NSLayoutConstraint!
     
     @IBOutlet var bottomViewB2: NSLayoutConstraint!
-//    @IBOutlet var bottomViewB: NSLayoutConstraint!
     
-//    @IBOutlet var bottomSpacingConstraint: NSLayoutConstraint!
-//    
-//    @IBOutlet var btmSpacingConstraintCamera: NSLayoutConstraint!
-//    
-//    @IBOutlet var btmSpacingConstraintBtn: NSLayoutConstraint!
-    
+    @IBOutlet var mainPostImgH: NSLayoutConstraint!
     
     @IBOutlet var idImgView: UIImageView!
     
@@ -26,11 +24,6 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     @IBOutlet var dateLbl: UILabel!
     @IBOutlet var postLbl: UILabel!
     @IBOutlet var postImgView: UIImageView!
-    
-//    @IBOutlet var bottomSpacingConstraintImg: NSLayoutConstraint!
-//    
-//    
-//    @IBOutlet var bottomSpacingConstraintBtn: NSLayoutConstraint!
     
     @IBAction func backAction(sender: UIBarButtonItem) {
         self.dismissViewControllerAnimated(false, completion: nil)
@@ -47,16 +40,33 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     
     var stThreadList : [ReplyModel] = []
     
+    //actionReply & bottomView begin
+    @IBOutlet var actionReplyImgBtn: UIButton!
+    
+    @IBOutlet var actionReplyImg: UIImageView!
+    
+    @IBOutlet var replyCameraBtn: UIButton!
+    
+    @IBOutlet var replyTxt: UITextView!
+    
+    @IBOutlet var replyBtn: UIButton!
+    
+    @IBOutlet var actionReplyContainer: UIView!
+    
+    var imagePicker = UIImagePickerController()
+    
+    var shouldFocusOnReplyTxt : Bool = false
+    //actionReply & bottomView end
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.addHandlers()
+        
+        actionReplyContainer.hidden = true
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidShowNotification, object: nil);
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidHideNotification, object: nil);
-        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
-        
-//        self.bottomSpacingConstraintBtn?.constant = 50.0
         
         self.idImgView.image = UIImage(named:  "bullsmile.png")
         
@@ -71,9 +81,10 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         let postImg: NSString = segueArgument.postImg
         if postImg.isEqualToString("") {
-            self.postImgView.removeConstraint(NSLayoutConstraint(item: self.postImgView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
-            
-            self.postImgView.addConstraint(NSLayoutConstraint(item: self.postImgView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
+            //            self.postImgView.removeConstraint(NSLayoutConstraint(item: self.postImgView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
+            //
+            //            self.postImgView.addConstraint(NSLayoutConstraint(item: self.postImgView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
+            mainPostImgH.constant = 0
         }else{
             ImageLoader.sharedLoader.imageForUrl(GlobalFunction().getActualImg(postImg) as String, completionHandler:{(image: UIImage?, url: String) in
                 self.postImgView.image = image!
@@ -95,41 +106,29 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         self.appendFeeds()
         
+        shouldFocusOnReplyTxt = false
+        
     }
     
     func keyboardNotification(notification: NSNotification) {
         
         let isShowing = notification.name == UIKeyboardDidShowNotification
         
-        println("------1\(isShowing)")
+        //        println("------1\(isShowing)")
         
         if let userInfo = notification.userInfo {
             
-            println("------2")
+            //            println("------2")
             
             let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue()
             let endFrameHeight = endFrame?.size.height ?? 0.0
-//            let duration:NSTimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
-//            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
-//            let animationCurveRaw = animationCurveRawNSN?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
-//            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
             
             println("values: \(self.bottomViewB2?.constant) \(endFrameHeight)")
             
             self.bottomViewB2?.constant = isShowing ? endFrameHeight : 0.0
-            
-            
-//            self.btmSpacingConstraintCamera?.constant = isShowing ? endFrameHeight + 12.0 : 8.0
-//            self.btmSpacingConstraintBtn?.constant = isShowing ? endFrameHeight + 8.0 : 8.0
-            
+            self.actionReplyContainerB?.constant = isShowing ? endFrameHeight + 40.0 : 40.0
             
             println("values after: \(self.bottomViewB2?.constant) \(endFrameHeight)")
-            
-//            UIView.animateWithDuration(duration,
-//                delay: NSTimeInterval(0),
-//                options: animationCurve,
-//                animations: { self.view.layoutIfNeeded() },
-//                completion: nil)
         }
     }
     
@@ -220,9 +219,9 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         // Dispose of any resources that can be recreated.
     }
     
-//    deinit {
-//        NSNotificationCenter.defaultCenter().removeObserver(self)
-//    }
+    //    deinit {
+    //        NSNotificationCenter.defaultCenter().removeObserver(self)
+    //    }
     
     /*
     // MARK: - Navigation
@@ -240,11 +239,11 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         var post:NSString = "id=\(segueArgument.postId)&s=2"
         
-//        NSLog("PostData: %@",post);
+        //        NSLog("PostData: %@",post);
         
         let urlString : String = globalVariables.serverUrl+"/stock_tab6_op_json.php"
         
-//        NSLog("URL: %@",urlString);
+        //        NSLog("URL: %@",urlString);
         
         var url:NSURL = NSURL(string:urlString)!
         
@@ -268,13 +267,13 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         if ( urlData != nil ) {
             let res = response as! NSHTTPURLResponse!;
             
-//            NSLog("Response code: %ld", res.statusCode);
+            //            NSLog("Response code: %ld", res.statusCode);
             
             if (res.statusCode >= 200 && res.statusCode < 300)
             {
                 var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
                 
-//                NSLog("Response Replies ==> %@", responseData);
+                //                NSLog("Response Replies ==> %@", responseData);
                 
                 var error: NSError?
                 
@@ -284,25 +283,17 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
                     var idx = 0
                     for jsonSubPiece : AnyObject in jsonPiece as! NSArray {
                         if(idx == 5){
-//                            let json = JSON(jsonSubPiece as! NSArray)
-                   
+                            //                            let json = JSON(jsonSubPiece as! NSArray)
+                            
                             for replyPiece : AnyObject in jsonSubPiece as! NSArray {
                                 let json = JSON(replyPiece as! NSArray)
                                 
-//                                println("reply array: \(json)")
+                                //                                println("reply array: \(json)")
                                 self.generateFeedsReplyFinal(json,isAppend: true)
                             }
-//                                                        for replyPiece : AnyObject in json {
-//                                                            let json = JSON(jsonPiece as! NSArray)
-//                            
-//                                                            self.generateFeedsFinal(json,isAppend: true)
-//                                                        }
                         }
                         idx++
                     }
-                    
-                    
-                    //                    self.generateFeedsFinal(json,isAppend: true)
                 }
                 
             } else {
@@ -364,5 +355,406 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.stTableView.reloadData()
         })
+    }
+    
+    
+    @IBAction func actionReplyImgBtnTapped(sender: AnyObject) {
+        clearUploadImg()
+    }
+    
+    func clearUploadImg(){
+        actionReplyImg.image = nil
+        actionReplyContainer.hidden = true
+    }
+    
+    @IBAction func replyCameraBtnTapped(sender: AnyObject) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.SavedPhotosAlbum){
+            
+            
+            if replyTxt.isFirstResponder() {
+                self.shouldFocusOnReplyTxt = true
+            }
+            
+            println("Button capture")
+            
+            imagePicker.delegate = self
+            imagePicker.sourceType = UIImagePickerControllerSourceType.SavedPhotosAlbum;
+            imagePicker.allowsEditing = false
+            
+            self.presentViewController(imagePicker, animated: true, completion: nil)
+        }
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject])
+    {
+        picker .dismissViewControllerAnimated(true, completion: nil)
+        
+        if let imageTemp : UIImage? = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            actionReplyImg.image = imageTemp
+            actionReplyContainer.hidden = false
+        }else{
+            actionReplyContainer.hidden = true
+        }
+        
+        if shouldFocusOnReplyTxt {
+            replyTxt.becomeFirstResponder()
+        }
+        
+        //tambahkan: jika sebelum tombol kamera diklik, input text reply terfokus, setelah gambar
+        //dipilih seharusnya input text reply diberi fokus lagi
+    }
+    
+    
+    @IBAction func replyBtnTapped(sender: AnyObject) {
+        if(self.validateBeforeReply()){
+            if actionReplyImg.image != nil {
+                self.sendReplyImage()
+            }else{
+                self.sendReplyMessage("")
+            }
+        }
+    }
+    
+    func validateBeforeReply() -> Bool {
+        let reply:NSString = replyTxt.text
+        if ( reply.isEqualToString("")) {
+            GlobalFunction().showAlert("Reply Failed!", message: "Please write something")
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    func sendReplyImage() {
+        // init paramters Dictionary
+        var parameters = [
+            "task": "task",
+            "variable1": "var"
+        ]
+        
+        // add addtionial parameters
+        parameters["_xn"] = "\(GlobalFunction().getXN())"
+        parameters["_from_ios"] = "1"
+        
+        // example image data
+        //        let image = UIImage(named: "177143.jpg")
+        let image = actionReplyImg.image
+        let imageData = UIImagePNGRepresentation(image)
+        
+        // CREATE AND SEND REQUEST ----------
+        
+        let urlRequest = GlobalFunction().urlRequestWithComponents(GlobalVariables().serverUrlDesktop+"/upload_reply.php", parameters: parameters, imageData: imageData)
+        
+        Alamofire.upload(urlRequest.0, urlRequest.1)
+            .progress { (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in
+                println("\(totalBytesWritten) / \(totalBytesExpectedToWrite)")
+            }
+            .responseJSON { (request, response, jsonResponse, error) in
+                println("REQUEST \(request)")
+                //                println("RESPONSE \(response)")
+                println("JSON \(jsonResponse)")
+                println("ERROR \(error)")
+                
+                if error == nil {
+                    let responseDict = JSON(jsonResponse as! NSDictionary)
+                    
+                    let statTemp = responseDict["stat"]
+                    let stat : NSString = "\(statTemp)"
+                    if stat.isEqualToString("0") {
+                        let msg = responseDict["msg"]
+                        GlobalFunction().showAlert("Upload Image Failed!", message: "\(msg)")
+                    }else{
+                        let id = responseDict["id"]
+                        self.sendReplyMessage("\(id)")
+                    }
+                }else{
+                    GlobalFunction().showAlert("Upload Image Failed!", message: error!.description)
+                }
+        }
+    }
+    
+    func sendReplyMessage(imId : String){
+        var reply:NSString = replyTxt.text
+        let globalVariables = GlobalVariables()
+        
+        let uname:NSString = GlobalFunction().getXN()
+        
+        var replyData:NSString = "x=\(uname)&y=\(segueArgument.postId)&z=\(reply)&im=\(imId)&s=3"
+        
+        if let responseData:NSData? = GlobalFunction().askServer("Reply", url: globalVariables.serverUrl+"/stock_tab6_reply.php", postData: replyData){
+            
+            let responseNSStr:NSString  = NSString(data:responseData!, encoding:NSUTF8StringEncoding)!
+            
+            let responseStr :String = responseNSStr as String
+            
+            println(responseStr)
+            
+            let responseMsg: NSString = responseStr.substringFromIndex(advance(responseStr.startIndex,3))
+            
+            let responseStat: NSString = responseStr.substringToIndex(advance(responseStr.startIndex, 1))
+            if(responseStat.isEqualToString("1")){
+                
+                var error: NSError?
+                
+                var dataFromNetwork:NSData! = responseMsg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+                
+                let jsonContent = JSON(data: dataFromNetwork)
+                
+//                println("1------------")
+//                println(jsonContent)
+                
+                var replier : NSString = "null"
+                if let replierTemp : NSString? = jsonContent[0][0].string {
+                    replier = replierTemp!
+                }
+                
+                var poster : NSString = "null"
+                if let posterTemp : NSString? = jsonContent[0][1].string {
+                    poster = posterTemp!
+                }
+                
+                var post : NSString = "null"
+                if let postTemp : NSString? = jsonContent[0][2].string {
+                    post = postTemp!
+                }
+                
+                var reply : NSString = "null"
+                if let replyTemp : NSString? = jsonContent[0][3].string {
+                    reply = replyTemp!
+                }
+                
+                var cat_id : NSInteger = 0
+                if let cat_idTemp : NSInteger? = jsonContent[0][4].int {
+                    cat_id = cat_idTemp!
+                }
+                
+                var act_date : NSInteger = 0
+                if let act_dateTemp : NSInteger? = jsonContent[0][5].int {
+                    act_date = act_dateTemp!
+                }
+                
+                var post_id : NSInteger = 0
+                if let post_idTemp : NSInteger? = jsonContent[0][6].int {
+                    post_id = post_idTemp!
+                }
+                
+                var cd : NSInteger = 0
+                if let cdTemp : NSInteger? = jsonContent[0][7].int {
+                    cd = cdTemp!
+                }
+                
+                var pp : NSString = "bullsmile.png"
+                if let ppTemp : NSString? = jsonContent[0][8].string {
+                    pp = ppTemp!
+                }
+                
+                var rep_id : NSInteger = 0
+                if let rep_idTemp : NSInteger? = jsonContent[0][9].int {
+                    rep_id = rep_idTemp!
+                }
+                
+                var images_str : NSString = ""
+                if jsonContent[0][10].count > 0 {
+                    images_str = jsonContent[0][10][0].string!
+                }
+                
+                var images_arr = []
+                
+                if(!images_str.isEqualToString("")){
+                    images_arr = [images_str]
+                }
+                
+                var creply : NSInteger = 0
+                if let creplyTemp : NSInteger? = jsonContent[0][11].int {
+                    creply = creplyTemp!
+                }
+                
+                var hot_threaded : NSInteger = 0
+                if let hot_threadedTemp : NSInteger? = jsonContent[0][12].int {
+                    hot_threaded = hot_threadedTemp!
+                }
+                
+                let shortlink : NSString = ""
+                var pinned : NSInteger = 0
+                if let pinnedTemp : NSInteger? = jsonContent[0][14].int {
+                    pinned = pinnedTemp!
+                }
+                
+                var sent_from : NSInteger = 0
+                if let sent_fromTemp : NSInteger? = jsonContent[0][15].int {
+                    sent_from = sent_fromTemp!
+                }
+                
+                var act_date_before : NSInteger = 0
+                if let act_date_beforeTemp : NSInteger? = jsonContent[0][16].int {//element index #16
+                    act_date_before = act_date_beforeTemp!
+                }
+                
+                let mention_arr = []
+                let mention_arr_reply = []
+                let collection_count : NSInteger = 0
+                
+                var nbed : NSInteger = 0
+                if let nbedTemp : NSInteger? = jsonContent[0][20].int {
+                    nbed = nbedTemp!
+                }
+                
+                var post_date : NSString = "0"
+                if let post_dateTemp : NSString? = jsonContent[0][21].string {
+                    post_date = post_dateTemp!
+                }
+                
+                var gender : NSInteger = 0
+                if let genderTemp : NSInteger? = jsonContent[0][22].int {
+                    gender = genderTemp!
+                }
+                
+                let jsonDict = [
+                        [
+                            replier
+                            ,poster
+                            ,post
+                            ,reply
+                            ,cat_id
+                            ,act_date
+                            ,post_id
+                            ,cd
+                            ,pp
+                            ,rep_id
+                            ,images_arr
+                            ,creply
+                            ,hot_threaded
+                            ,shortlink
+                            ,pinned
+                            ,sent_from
+                            ,act_date_before
+                            ,mention_arr
+                            ,mention_arr_reply
+                            ,collection_count
+                            ,nbed
+                            ,post_date
+                            ,gender
+                        ]
+                    ]
+                
+                
+                if !socketClient.socket.connected {
+                    socketClient.socket.connect()
+                }
+                
+                socketClient.socket.emit("message reply",jsonDict)
+                
+                replyTxt.text = "";
+                replyTxt.resignFirstResponder()
+                
+                if actionReplyImg.image != nil {
+                    self.clearUploadImg()
+                }
+            }else{
+                println("failed2")
+            }
+        }
+    }
+    
+    func addHandlers() {
+        
+        if !socketClient.socket.connected {
+            socketClient.socket.connect()
+        }
+        
+        socketClient.socket.on("message reply"){[weak self] dataReply, ack in
+            var handled : Bool = false
+            if let d = dataReply?[0] as? NSString {
+                println("reply handled")
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeeds(d, isPost: false),isAppend: true)
+                handled = true
+            }
+            
+            if(!handled){
+                println("reply not handled: \(dataReply?[0])")
+                self!.generateFeedsFinalMediator(GlobalFunction().generateFeedsFromArr(dataReply?[0] as! NSArray),isAppend: true)
+            }
+        }
+    }
+    
+    func generateFeedsFinalMediator(contentJSON: JSON, isAppend : Bool){
+        
+        let threadNew : [ReplyModel] =  generateFeedsFinal(contentJSON, isAppend: isAppend)
+        
+        if !isAppend {
+            stThreadList = threadNew + stThreadList
+        }else{
+            stThreadList = stThreadList + threadNew
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.stTableView.reloadData()
+        })
+    }
+    
+    func generateFeedsFinal(contentJSON: JSON, isAppend : Bool) -> [ReplyModel]{
+        var replier : NSString = ""
+        if let replierTemp : NSString? = contentJSON[0].string {
+            replier = replierTemp!
+        }
+        
+        var poster : NSString = ""
+        if let posterTemp : NSString? = contentJSON[1].string {
+            poster = posterTemp!
+        }
+        var post : NSString = ""
+        if let postTemp : NSString? = contentJSON[2].string {
+            post = postTemp!
+        }
+        
+        var reply : NSString = ""
+        if let replyTemp : NSString? = contentJSON[3].string {
+            reply = replyTemp!
+        }
+        
+        var displayMode : Int = 0 //POST_MODE
+        if(!replier.isEqualToString("") && !replier.isEqualToString("null")){
+            displayMode = 1 //REPLY_MODE
+        }
+        
+        var rowText : NSString
+        
+        if(displayMode == 0){
+            rowText =  "@\(poster) > \" \(post)\""
+        }else{
+            rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
+        }
+        
+        var img : NSString = ""
+        
+        if(contentJSON[10].count > 0){
+            if let imgTemp : NSString? = contentJSON[10][0].string {
+                img = imgTemp!
+            }
+        }
+        
+        var idImg : NSString = ""
+        if let idImgTemp : NSString? = contentJSON[8].string {
+            idImg = idImgTemp!
+        }
+        
+        if !GlobalFunction().shouldUseDrawable(idImg) {
+            idImg = GlobalVariables().serverUrlDesktop + "/uploaded_images/profpic/" + (idImg as String)
+        }
+        
+        
+        var actDateInt : Int = -1
+        if let actDateIntTemp : Int = contentJSON[5].int {
+            actDateInt = actDateIntTemp
+        }
+        
+        var postId : Int = 0
+        if let postIdTemp : Int = contentJSON[6].int {
+            postId = postIdTemp
+        }
+        
+        let threadNew : [ReplyModel] = [ReplyModel(reply: reply, replyDate: GlobalFunction().getTimeF(actDateInt), idImg: idImg, replyImg: img, replier: replier)]
+        
+        return threadNew
     }
 }
