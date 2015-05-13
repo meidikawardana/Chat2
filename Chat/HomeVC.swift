@@ -305,7 +305,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     }
     
     func addHandlers() {
-        socketClient.socket.onAny {println("Got event: \($0.event), with items: \($0.items)")}
+//        socketClient.socket.onAny {println("Got event: \($0.event), with items: \($0.items)")}
         socketClient.socket.on("message"){[weak self] data, ack in
             println("got message! \(data?[0])")
         }
@@ -383,12 +383,24 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             displayMode = 1 //REPLY_MODE
         }
         
+        if !post.isEqualToString("") {
+            //            post.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .Re, range: nil)
+            post = (post as String).replace("<[^>]+>",template:"\r\n")
+            post = (post as String).replace("<br>",template:"")
+        }
+        
+        if !reply.isEqualToString("") {
+            //            post.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .Re, range: nil)
+            reply = (reply as String).replace("<[^>]+>",template:"\r\n")
+            reply = (reply as String).replace("<br>",template:"")
+        }
+        
         var rowText : NSString
         
         if(displayMode == 0){
-            rowText =  "@\(poster) > \" \(post)\""
+            rowText =  "@\(poster) > \"\(post)\""
         }else{
-            rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
+            rowText =  "@\(replier) replied @\(poster) > \"\(reply)\""
         }
         
         var img : NSString = ""
@@ -417,11 +429,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         var postId : Int = 0
         if let postIdTemp : Int = contentJSON[6].int {
             postId = postIdTemp
-        }
-        
-        if !post.isEqualToString("") {
-//            post.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .Re, range: nil)
-            post = (post as String).replace("<[^>]+>",template:"")
         }
         
         let threadNew : [PostModel] = [PostModel(postContent:rowText, postDate:GlobalFunction().getTimeF(actDateInt),idImg:idImg,postImg: img, postId: postId, poster: poster, postOri: post, postDateReal:actDateInt )]

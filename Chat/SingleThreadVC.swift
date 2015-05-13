@@ -188,12 +188,12 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     
     func setReplier(cell:BasicCell, indexPath:NSIndexPath) {
         let thread = stThreadList[indexPath.row] as ReplyModel
-        cell.posterLabel.text = thread.replier as String
+        cell.posterLabel.text = "@"+(thread.replier as String) as String
     }
     
     func setReplyContent(cell:BasicCell, indexPath:NSIndexPath) {
         let thread = stThreadList[indexPath.row] as ReplyModel
-        cell.postLabel.text = thread.reply as String
+        cell.postLabel.text =  thread.reply as String
     }
     
     func setReplyDate(cell:BasicCell, indexPath:NSIndexPath) {
@@ -346,7 +346,8 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         //        println("-----idmg:\(idImg)")
         
         if !reply.isEqualToString("") {
-            reply = (reply as String).replace("<[^>]+>",template:"")
+            reply = (reply as String).replace("<br>",template:"\r\n")
+            reply = (reply as String).replace("<[^>]+>",template:"")            
         }
         
         let threadNew : [ReplyModel] = [ReplyModel(reply: reply, replyDate: GlobalFunction().getTimeF(actDateInt), idImg: idImg, replyImg: replyImg, replier: replier)]
@@ -665,16 +666,56 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         socketClient.socket.on("message reply"){[weak self] dataReply, ack in
             var handled : Bool = false
             if let d = dataReply?[0] as? NSString {
-                println("reply handled")
-                self!.generateFeedsFinalMediator(GlobalFunction().generateFeeds(d, isPost: false),isAppend: true)
+                println("reply handled: \(d)")
+
+                let json = self!.generateFeeds(d)
+                
+                if json != nil {
+                    println("reply handled not err")
+                    self!.generateFeedsFinalMediator(json,isAppend: true)
+                }else{
+                    println("reply handled err")
+                }                
+                
                 handled = true
             }
             
             if(!handled){
                 println("reply not handled: \(dataReply?[0])")
-                self!.generateFeedsFinalMediator(GlobalFunction().generateFeedsFromArr(dataReply?[0] as! NSArray),isAppend: true)
+                
+                let jsonDict = self!.generateFeedsFromArr(dataReply?[0] as! NSArray)
+                
+                if jsonDict != nil {
+                    println("reply not handled not err")
+                    self!.generateFeedsFinalMediator(jsonDict,isAppend: true)
+                }else{
+                    println("reply not handled err")
+                }
             }
         }
+    }
+    
+    func generateFeedsFromArr(jsonData : NSArray) -> JSON{
+        let json = JSON(jsonData)
+        
+        let contentJSON = json[0]
+        return contentJSON
+    }
+    
+    func generateFeeds(jsonData : NSString) -> JSON{
+        
+        var error: NSError?
+        
+        var dataFromNetwork:NSData! = jsonData.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+        
+        let jsonDict : NSDictionary? = NSJSONSerialization.JSONObjectWithData(dataFromNetwork, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary
+        
+        
+        let json = JSON(data: dataFromNetwork)
+        
+        let contentJSON = json[0]
+        
+        return contentJSON
     }
     
     func generateFeedsFinalMediator(contentJSON: JSON, isAppend : Bool){
@@ -702,28 +743,28 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         if let posterTemp : NSString? = contentJSON[1].string {
             poster = posterTemp!
         }
-        var post : NSString = ""
-        if let postTemp : NSString? = contentJSON[2].string {
-            post = postTemp!
-        }
+//        var post : NSString = ""
+//        if let postTemp : NSString? = contentJSON[2].string {
+//            post = postTemp!
+//        }
         
         var reply : NSString = ""
         if let replyTemp : NSString? = contentJSON[3].string {
             reply = replyTemp!
         }
         
-        var displayMode : Int = 0 //POST_MODE
-        if(!replier.isEqualToString("") && !replier.isEqualToString("null")){
-            displayMode = 1 //REPLY_MODE
-        }
+//        var displayMode : Int = 0 //POST_MODE
+//        if(!replier.isEqualToString("") && !replier.isEqualToString("null")){
+//            displayMode = 1 //REPLY_MODE
+//        }
         
-        var rowText : NSString
-        
-        if(displayMode == 0){
-            rowText =  "@\(poster) > \" \(post)\""
-        }else{
-            rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
-        }
+//        var rowText : NSString
+//        
+//        if(displayMode == 0){
+//            rowText =  "@\(poster) > \" \(post)\""
+//        }else{
+//            rowText =  "@\(replier) replied @\(poster) > \" \(reply)\""
+//        }
         
         var img : NSString = ""
         
@@ -753,8 +794,9 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
             postId = postIdTemp
         }
         
-        if !post.isEqualToString("") {
-            post = (post as String).replace("<[^>]+>",template:"")
+        if !reply.isEqualToString("") {
+            reply = (reply as String).replace("<br>",template:"\r\n")
+            reply = (reply as String).replace("<[^>]+>",template:"")
         }
         
         let threadNew : [ReplyModel] = [ReplyModel(reply: reply, replyDate: GlobalFunction().getTimeF(actDateInt), idImg: idImg, replyImg: img, replier: replier)]

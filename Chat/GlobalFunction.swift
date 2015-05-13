@@ -84,7 +84,7 @@ class GlobalFunction {
     func getActualImg(url:NSString) ->NSString{
         var img_post : NSString = url
         
-        if !(substring(img_post as String, from: 0, to: 7) as NSString).isEqualToString("http://") {
+        if !substring(img_post as String, from: 0, to: 7).isEqualToString("http://") {
             img_post = "http://" + (img_post as String)
         }
         
@@ -202,16 +202,12 @@ class GlobalFunction {
         
         let json = ( isPost ? JSON(jsonDict!) : JSON(data: dataFromNetwork))
         
-//        if !isPost {
-//            println("reply............ \(json[0])")
-//        }
-        
         let contentJSON = ( isPost ? json["content"][0] : json[0] )
         
         return contentJSON
     }
     
-    func substring(str : String, from: Int, to: Int) -> String{
+    func substring(str : String, from: Int, to: Int) -> NSString{
 //        if(from == 0)
         
         var result = str
