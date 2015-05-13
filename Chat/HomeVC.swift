@@ -337,7 +337,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     }
     
     func generateFeedsFinalMediator(contentJSON: JSON, isAppend : Bool){
-        
         let threadNew : [PostModel] =  generateFeedsFinal(contentJSON, isAppend: isAppend)
         
         if !isAppend {

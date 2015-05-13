@@ -54,7 +54,6 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
     @IBOutlet var actionReplyContainer: UIView!
     
     var imagePicker = UIImagePickerController()
-    
     var shouldFocusOnReplyTxt : Bool = false
 
     //actionReply & bottomView end
@@ -68,7 +67,7 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidShowNotification, object: nil);
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidHideNotification, object: nil);
-        
+
         actionReplyContainer.hidden = true
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardNotification:"), name:UIKeyboardDidShowNotification, object: nil);
@@ -378,7 +377,7 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
             if replyTxt.isFirstResponder() {
                 self.shouldFocusOnReplyTxt = true
             }
-            
+
             println("Button capture")
             
             imagePicker.delegate = self
