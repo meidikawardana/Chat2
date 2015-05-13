@@ -35,7 +35,17 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
     
     @IBOutlet var tableViewFooter: MyFooter!
     
-    var loading = false
+    var loadingFooter = false
+    var loadingHeader = false
+    
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        
+        println("refreshControlAdded")
+        
+        return refreshControl
+        }()
     
     @IBAction func uploadImgTapped(sender: AnyObject) {
         
@@ -72,10 +82,6 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         }
     }
     
-    
-    //    let socket = SocketIOClient(socketURL: "192.168.1.100:8080")
-    //    let socket = SocketIOClient(socketURL: GlobalVariables().socketUrl)
-    
     var threadList : [PostModel] = []
     
     override func viewDidLoad() {
@@ -92,6 +98,8 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
+        
+        tableView.addSubview(self.refreshControl)
     }
     
     // セクション数
@@ -191,7 +199,7 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             
             socketClient.socket.emit("add user", jsonLogin)
             
-            self.appendFeeds(0)
+            self.addFeeds(0, isAppend : true)
         }
     }
     
@@ -342,8 +350,12 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             self.tableView.reloadData()
         })
         
-        if loading {
+        if loadingFooter {
             self.setLoadingState(false)
+        }
+        
+        if !isAppend && loadingHeader {
+            refreshControl.endRefreshing()
         }
     }
     
@@ -406,6 +418,11 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         var postId : Int = 0
         if let postIdTemp : Int = contentJSON[6].int {
             postId = postIdTemp
+        }
+        
+        if !post.isEqualToString("") {
+//            post.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .Re, range: nil)
+            post = (post as String).replace("<[^>]+>",template:"")
         }
         
         let threadNew : [PostModel] = [PostModel(postContent:rowText, postDate:GlobalFunction().getTimeF(actDateInt),idImg:idImg,postImg: img, postId: postId, poster: poster, postOri: post, postDateReal:actDateInt )]
@@ -641,11 +658,15 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         }
     }
     
-    func appendFeeds(minDate:Int){
+    func addFeeds(minOrMaxDate:Int, isAppend : Bool){
         let globalVariables = GlobalVariables()
         
         
-        var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=\(minDate)&use_collection_clause=1"
+        var post:NSString = "_lin=&_xn=&t=3&tag=&s=2&n=\(minOrMaxDate)&use_collection_clause=1"
+        
+        if !isAppend {
+            post = "_lin=&_xn=&t=3&tag=&s=2&m=\(minOrMaxDate)&use_collection_clause=1"
+        }
         
         //        NSLog("PostData: %@",post);
         
@@ -681,16 +702,22 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
             {
                 var responseData:NSString  = NSString(data:urlData!, encoding:NSUTF8StringEncoding)!
                 
-                //                NSLog("Response Feeds ==> %@", responseData);
+                //                    NSLog("Response Feeds ==> %@", responseData)
                 
                 var error: NSError?
                 
                 let jsonArr:NSArray = NSJSONSerialization.JSONObjectWithData(urlData!, options:NSJSONReadingOptions.MutableContainers , error: &error) as! NSArray
                 
+                if jsonArr.count == 0 {
+                    if !isAppend && loadingHeader {
+                        refreshControl.endRefreshing()
+                    }
+                }
+                
                 for jsonPiece : AnyObject in jsonArr {
                     let json = JSON(jsonPiece as! NSArray)
                     
-                    self.generateFeedsFinalMediator(json,isAppend: true)
+                    self.generateFeedsFinalMediator(json,isAppend: isAppend)
                 }
                 
             } else {
@@ -710,36 +737,29 @@ UINavigationControllerDelegate,UIImagePickerControllerDelegate {
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         
         if (maximumOffset - currentOffset) <= 40 {
-            //            println("scrolled \(threadList.count)")
             loadSegment(pageSize)
         }
     }
     
     func setLoadingState(loading:Bool) {
-        self.loading = loading
+        self.loadingFooter = loading
         self.tableViewFooter.hidden = !loading
     }
     
     func loadSegment(size:Int) {
-        
-        if (!self.loading) {
+        if (!self.loadingFooter) {
             self.setLoadingState(true)
             
             println("c: \(threadList[threadList.count-1].postDateReal)")
             
-            appendFeeds(threadList[threadList.count-1].postDateReal)
-            
-            //            MyDataProvider.getInstance().requestData(offset, size: size,
-            //                listener: {(items:[ViewController.MyItem]) -> () in
-            //
-            //                    for item:MyItem in items {
-            //                        self.items.append(item)
-            //                    }
-            //                    
-            //                    self.tableView.reloadData()
-            //                    
-            //                    self.setLoadingState(false)
-            //            })
+            addFeeds(threadList[threadList.count-1].postDateReal, isAppend : true)
+        }
+    }
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        if threadList.count > 0 {
+            loadingHeader = true
+            addFeeds(threadList[0].postDateReal, isAppend : false)
         }
     }
 }

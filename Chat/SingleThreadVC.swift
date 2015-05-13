@@ -120,21 +120,17 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         
         let isShowing = notification.name == UIKeyboardDidShowNotification
         
-        //        println("------1\(isShowing)")
-        
         if let userInfo = notification.userInfo {
-            
-            //            println("------2")
             
             let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue()
             let endFrameHeight = endFrame?.size.height ?? 0.0
             
-            println("values: \(self.bottomViewB2?.constant) \(endFrameHeight)")
+//            println("values: \(self.bottomViewB2?.constant) \(endFrameHeight)")
             
             self.bottomViewB2?.constant = isShowing ? endFrameHeight : 0.0
             self.actionReplyContainerB?.constant = isShowing ? endFrameHeight + 40.0 : 40.0
             
-            println("values after: \(self.bottomViewB2?.constant) \(endFrameHeight)")
+//            println("values after: \(self.bottomViewB2?.constant) \(endFrameHeight)")
         }
     }
     
@@ -349,6 +345,10 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         }
         
         //        println("-----idmg:\(idImg)")
+        
+        if !reply.isEqualToString("") {
+            reply = (reply as String).replace("<[^>]+>",template:"")
+        }
         
         let threadNew : [ReplyModel] = [ReplyModel(reply: reply, replyDate: GlobalFunction().getTimeF(actDateInt), idImg: idImg, replyImg: replyImg, replier: replier)]
         
@@ -752,6 +752,10 @@ class SingleThreadVC: UIViewController,UITableViewDataSource, UITableViewDelegat
         var postId : Int = 0
         if let postIdTemp : Int = contentJSON[6].int {
             postId = postIdTemp
+        }
+        
+        if !post.isEqualToString("") {
+            post = (post as String).replace("<[^>]+>",template:"")
         }
         
         let threadNew : [ReplyModel] = [ReplyModel(reply: reply, replyDate: GlobalFunction().getTimeF(actDateInt), idImg: idImg, replyImg: img, replier: replier)]
